@@ -81,6 +81,12 @@ public class AlphaBetaSearch<STATE, ACTION, PLAYER> implements
 
 	public double maxValue(STATE state, PLAYER player, double alpha, double beta) {
 		metrics.incrementInt(METRICS_NODES_EXPANDED);
+		
+		if(game.needsCutOff(state))
+			return game.getEvaluation(state, player);
+		else if (game.isTerminal(state))
+			return game.getUtility(state, player);
+		
 		if (game.isTerminal(state))
 			return game.getUtility(state, player);
 		double value = Double.NEGATIVE_INFINITY;
@@ -96,6 +102,12 @@ public class AlphaBetaSearch<STATE, ACTION, PLAYER> implements
 
 	public double minValue(STATE state, PLAYER player, double alpha, double beta) {
 		metrics.incrementInt(METRICS_NODES_EXPANDED);
+		
+		if(game.needsCutOff(state))
+			return game.getEvaluation(state, player);
+		else if (game.isTerminal(state))
+			return game.getUtility(state, player);
+		
 		if (game.isTerminal(state))
 			return game.getUtility(state, player);
 		double value = Double.POSITIVE_INFINITY;

@@ -51,5 +51,9 @@ public interface Game<STATE, ACTION, PLAYER> {
 
 	boolean isTerminal(STATE state);
 
+	boolean needsCutOff(STATE state);
+	
+	int getEvaluation(STATE state, PLAYER player);
+	
 	double getUtility(STATE state, PLAYER player);
 }

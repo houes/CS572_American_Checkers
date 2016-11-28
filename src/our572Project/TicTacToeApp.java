@@ -4,11 +4,15 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -37,7 +41,7 @@ public class TicTacToeApp {
 	/** Application starter. */
 	public static void main(String[] args) {
 		JFrame frame = new TicTacToeApp().constructApplicationFrame();
-		frame.setSize(400, 400);
+		frame.setSize(800, 800);
 		frame.setVisible(true);
 	}
 
@@ -54,7 +58,10 @@ public class TicTacToeApp {
 		TicTacToeGame game;
 		TicTacToeState currState;
 		Metrics searchMetrics;
-
+		
+		ImageIcon icon_red;
+		ImageIcon icon_white;
+		
 		/** Standard constructor. */
 		TicTacToePanel() {
 			this.setLayout(new BorderLayout());
@@ -75,14 +82,37 @@ public class TicTacToeApp {
 
 			add(tbar, BorderLayout.NORTH);
 			JPanel spanel = new JPanel();
-			spanel.setLayout(new GridLayout(3, 3));
+			spanel.setLayout(new GridLayout(8, 8));
 			add(spanel, BorderLayout.CENTER);
-			squares = new JButton[9];
+			squares = new JButton[64];
 			Font f = new java.awt.Font(Font.SANS_SERIF, Font.PLAIN, 32);
-			for (int i = 0; i < 9; i++) {
+			try{
+				int ICON_WIDTH  = 60;
+				int ICON_HEIGHT = 60;
+				Image img_red = ImageIO.read(getClass().getResource("resources/red.BMP")).getScaledInstance( ICON_WIDTH, ICON_HEIGHT,  java.awt.Image.SCALE_SMOOTH ) ;;
+				Image img_white = ImageIO.read(getClass().getResource("resources/white.BMP")).getScaledInstance( ICON_WIDTH, ICON_HEIGHT,  java.awt.Image.SCALE_SMOOTH ) ;;
+				icon_red = new ImageIcon(img_red);
+				icon_white = new ImageIcon(img_white);
+			} catch (IOException ex) 
+			{
+				
+			}
+			for (int i = 0; i < 64; i++) {
+				
 				JButton square = new JButton("");
+				
+				boolean evenRow = false;
+				if((Math.floor(i/8))%2==0) 
+					evenRow = !evenRow;
+				int myInt = (evenRow) ? 1 : 0;
+			
 				square.setFont(f);
-				square.setBackground(Color.WHITE);
+				//square.setIcon(icon_red);
+				if((i+myInt)%2==0)
+					square.setBackground(new Color(182, 155, 76));
+				else
+					square.setBackground(new Color(0, 153, 76));
+				
 				square.addActionListener(this);
 				squares[i] = square;
 				spanel.add(square);
@@ -105,17 +135,21 @@ public class TicTacToeApp {
 				if (ae.getSource() == proposeButton)
 					proposeMove();
 				else {
-					for (int i = 0; i < 9; i++)
+					for (int i = 0; i < 64; i++)
 						if (ae.getSource() == squares[i])
 							currState = game.getResult(currState,
-									new XYLocation(i % 3, i / 3));
+									new XYLocation(i % 8, i / 8));
 				}
 			}
-			for (int i = 0; i < 9; i++) {
-				String val = currState.getValue(i % 3, i / 3);
+			for (int i = 0; i < 64; i++) {
+				String val = currState.getValue(i % 8, i / 8);
 				if (val == TicTacToeState.EMPTY)
 					val = "";
-				squares[i].setText(val);
+				//squares[i].setText(val);
+				if(val.equals("X"))
+					squares[i].setIcon(icon_red);
+				else if(val.equals("O"))
+					squares[i].setIcon(icon_white);
 			}
 			updateStatus();
 		}

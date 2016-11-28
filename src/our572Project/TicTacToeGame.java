@@ -2,6 +2,7 @@ package our572Project;
 
 import java.util.List;
 
+
 /**
  * Provides an implementation of the Tic-tac-toe game which can be used for
  * experiments with the Minimax algorithm.
@@ -46,6 +47,18 @@ public class TicTacToeGame implements Game<TicTacToeState, XYLocation, String> {
 	}
 
 	@Override
+	public boolean needsCutOff(TicTacToeState state)
+	{
+		int depth = state.getNumberOfMarkedPositions();
+		int rest_moves = 64-depth;
+		
+		if( rest_moves >= 10)//15 is good enough
+			return true;
+		else
+			return false;		
+	}
+	
+	@Override
 	public double getUtility(TicTacToeState state, String player) {
 		double result = state.getUtility();
 		if (result != -1) {
@@ -54,6 +67,23 @@ public class TicTacToeGame implements Game<TicTacToeState, XYLocation, String> {
 		} else {
 			throw new IllegalArgumentException("State is not terminal.");
 		}
+		return result;
+	}
+	
+	@Override
+	public int getEvaluation(TicTacToeState state, String player)
+	{
+		int result;
+		
+		int markedPositions = state.getNumberOfMarkedPositions();
+		int num_black = state.getNumberOfBlackPieces();
+		int num_white = markedPositions- num_black;
+		
+		if (player == TicTacToeState.X)
+			result = num_black - num_white;
+		else
+			result = num_white - num_black;
+		
 		return result;
 	}
 }
