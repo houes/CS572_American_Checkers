@@ -20,7 +20,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
 
-
 /**
  * Simple graphical Tic-tac-toe game application. It demonstrates the Minimax
  * algorithm for move selection as well as alpha-beta pruning.
@@ -46,8 +45,7 @@ public class TicTacToeApp {
 	}
 
 	/** Simple panel to control the game. */
-	private static class TicTacToePanel extends JPanel implements
-			ActionListener {
+	private static class TicTacToePanel extends JPanel implements ActionListener {
 		private static final long serialVersionUID = 1L;
 		JComboBox<String> strategyCombo;
 		JButton clearButton;
@@ -58,18 +56,25 @@ public class TicTacToeApp {
 		TicTacToeGame game;
 		TicTacToeState currState;
 		Metrics searchMetrics;
-		
+
 		ImageIcon icon_red;
 		ImageIcon icon_white;
-		
+		boolean select_mode = true;// if true, the current action is to select
+									// a
+									// piece, if false, the current action is to
+									// move to a position
+		XYLocation selected_piece; // record the selected piece
+
+		String WarningMsg; // warn the user if he/she clicks on a invalid
+							// position
+
 		/** Standard constructor. */
 		TicTacToePanel() {
 			this.setLayout(new BorderLayout());
 			JToolBar tbar = new JToolBar();
 			tbar.setFloatable(false);
-			strategyCombo = new JComboBox<String>(new String[] { "Minimax",
-					"Alpha-Beta", "Iterative Deepening Alpha-Beta",
-					"Iterative Deepening Alpha-Beta (log)" });
+			strategyCombo = new JComboBox<String>(new String[] { "Minimax", "Alpha-Beta",
+					"Iterative Deepening Alpha-Beta", "Iterative Deepening Alpha-Beta (log)" });
 			strategyCombo.setSelectedIndex(1);
 			tbar.add(strategyCombo);
 			tbar.add(Box.createHorizontalGlue());
@@ -86,33 +91,35 @@ public class TicTacToeApp {
 			add(spanel, BorderLayout.CENTER);
 			squares = new JButton[64];
 			Font f = new java.awt.Font(Font.SANS_SERIF, Font.PLAIN, 32);
-			try{
-				int ICON_WIDTH  = 60;
+			try {
+				int ICON_WIDTH = 60;
 				int ICON_HEIGHT = 60;
-				Image img_red = ImageIO.read(getClass().getResource("resources/red.BMP")).getScaledInstance( ICON_WIDTH, ICON_HEIGHT,  java.awt.Image.SCALE_SMOOTH ) ;;
-				Image img_white = ImageIO.read(getClass().getResource("resources/white.BMP")).getScaledInstance( ICON_WIDTH, ICON_HEIGHT,  java.awt.Image.SCALE_SMOOTH ) ;;
+				Image img_red = ImageIO.read(getClass().getResource("resources/red.BMP")).getScaledInstance(ICON_WIDTH,
+						ICON_HEIGHT, java.awt.Image.SCALE_SMOOTH);
+				;
+				Image img_white = ImageIO.read(getClass().getResource("resources/white.BMP"))
+						.getScaledInstance(ICON_WIDTH, ICON_HEIGHT, java.awt.Image.SCALE_SMOOTH);
+				;
 				icon_red = new ImageIcon(img_red);
 				icon_white = new ImageIcon(img_white);
-			} catch (IOException ex) 
-			{
-				
+			} catch (IOException ex) {
 			}
 			for (int i = 0; i < 64; i++) {
-				
+
 				JButton square = new JButton("");
-				
+
 				boolean evenRow = false;
-				if((Math.floor(i/8))%2==0) 
+				if ((Math.floor(i / 8)) % 2 == 0)
 					evenRow = !evenRow;
 				int myInt = (evenRow) ? 1 : 0;
-			
-				square.setFont(f);
-				//square.setIcon(icon_red);
-				if((i+myInt)%2==0)
+
+				// square.setFont(f);
+				// square.setIcon(icon_red);
+				if ((i + myInt) % 2 == 0)
 					square.setBackground(new Color(182, 155, 76));
 				else
 					square.setBackground(new Color(0, 153, 76));
-				
+
 				square.addActionListener(this);
 				squares[i] = square;
 				spanel.add(square);
@@ -129,29 +136,65 @@ public class TicTacToeApp {
 		@Override
 		public void actionPerformed(ActionEvent ae) {
 			searchMetrics = null;
+			boolean repick_piece = false;
+			boolean isProposedMove = false;
 			if (ae == null || ae.getSource() == clearButton)
 				currState = game.getInitialState();
 			else if (!game.isTerminal(currState)) {
-				if (ae.getSource() == proposeButton)
+				if (ae.getSource() == proposeButton) {
 					proposeMove();
-				else {
-					for (int i = 0; i < 64; i++)
-						if (ae.getSource() == squares[i])
-							currState = game.getResult(currState,
-									new XYLocation(i % 8, i / 8));
+					isProposedMove = true;
+				} else {
+					if (select_mode) {
+						// first click: select which piece to move
+						for (int i = 0; i < 64; i++)
+							if (ae.getSource() == squares[i]) {
+								selected_piece = new XYLocation(i % 8, i / 8);
+								break;
+							}
+						String nextPlayer = game.getPlayer(currState);
+						String nextPlayerColor = game.getPlayerByColor(currState);
+						String currSeletPiece = currState.getValue(selected_piece);
+						if (currSeletPiece.equals("EMPTY") || !currSeletPiece.equals(nextPlayer)) {
+							repick_piece = true;
+							statusBar.setText("Invalid position, You must select a " + nextPlayerColor + " piece!");
+						} else
+							statusBar.setText(nextPlayerColor + " was selected ");
+
+					} else {
+						// second click: select move to position
+						for (int i = 0; i < 64; i++)
+							if (ae.getSource() == squares[i]) {
+								currState = game.getResult(currState, selected_piece, new XYLocation(i % 8, i / 8));
+								break;
+							}
+					}
 				}
 			}
-			for (int i = 0; i < 64; i++) {
-				String val = currState.getValue(i % 8, i / 8);
-				if (val == TicTacToeState.EMPTY)
-					val = "";
-				//squares[i].setText(val);
-				if(val.equals("X"))
-					squares[i].setIcon(icon_red);
-				else if(val.equals("O"))
-					squares[i].setIcon(icon_white);
+
+			if (ae == null || ae.getSource() == clearButton || isProposedMove || !select_mode) {
+				for (int i = 0; i < 64; i++) {
+					String val = currState.getValue(i % 8, i / 8);
+					if (val == TicTacToeState.EMPTY)
+						val = "";
+
+					if (val.equals("X"))
+						squares[i].setIcon(icon_red);
+					else if (val.equals("O"))
+						squares[i].setIcon(icon_white);
+					else
+						squares[i].setIcon(null);
+				}
+
+				if (!repick_piece)
+					updateStatus();
 			}
-			updateStatus();
+
+			if (ae != null && !isProposedMove && !repick_piece)
+				select_mode = !select_mode;
+			
+			if (ae != null && ae.getSource() == clearButton)
+				select_mode = true;
 		}
 
 		/** Uses adversarial search for selecting the next action. */
@@ -166,14 +209,11 @@ public class TicTacToeApp {
 				search = AlphaBetaSearch.createFor(game);
 				break;
 			case 2:
-				search = IterativeDeepeningAlphaBetaSearch.createFor(game, 0.0,
-						1.0, 1000);
+				search = IterativeDeepeningAlphaBetaSearch.createFor(game, 0.0, 1.0, 1000);
 				break;
 			default:
-				search = IterativeDeepeningAlphaBetaSearch.createFor(game, 0.0,
-						1.0, 1000);
-				((IterativeDeepeningAlphaBetaSearch<?, ?, ?>) search)
-						.setLogEnabled(true);
+				search = IterativeDeepeningAlphaBetaSearch.createFor(game, 0.0, 1.0, 1000);
+				((IterativeDeepeningAlphaBetaSearch<?, ?, ?>) search).setLogEnabled(true);
 			}
 			action = search.makeDecision(currState);
 			searchMetrics = search.getMetrics();
@@ -191,7 +231,8 @@ public class TicTacToeApp {
 				else
 					statusText = "No winner...";
 			else
-				statusText = "Next move: " + game.getPlayer(currState);
+				statusText = "Next move: " + game.getPlayerByColor(currState);
+
 			if (searchMetrics != null)
 				statusText += "    " + searchMetrics;
 			statusBar.setText(statusText);

@@ -39,6 +39,10 @@ public class TicTacToeState implements Cloneable {
 	public String getValue(int col, int row) {
 		return board[getAbsPosition(col, row)];
 	}
+	
+	public String getValue(XYLocation pos) {
+		return getValue(pos.getXCoOrdinate(), pos.getYCoOrdinate());
+	}
 
 	public double getUtility() {
 		return utility;
@@ -47,7 +51,20 @@ public class TicTacToeState implements Cloneable {
 	public void mark(XYLocation action) {
 		mark(action.getXCoOrdinate(), action.getYCoOrdinate());
 	}
+	
+	public void mark(XYLocation from_pos, XYLocation to_pos) {
+		dismark(from_pos.getXCoOrdinate(),from_pos.getYCoOrdinate());
+		mark(to_pos.getXCoOrdinate(), to_pos.getYCoOrdinate());
+	}
 
+	public void dismark(int col, int row)
+	{
+		if(utility == -1 && board[getAbsPosition(col, row)] == playerToMove)
+		{
+			board[getAbsPosition(col, row)] = EMPTY;
+		}
+	}
+	
 	public void mark(int col, int row) {
 		if (utility == -1 && getValue(col, row) == EMPTY) {
 			board[getAbsPosition(col, row)] = playerToMove;

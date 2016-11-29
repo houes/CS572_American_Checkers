@@ -28,6 +28,13 @@ public class TicTacToeGame implements Game<TicTacToeState, XYLocation, String> {
 	public String getPlayer(TicTacToeState state) {
 		return state.getPlayerToMove();
 	}
+	
+	public String getPlayerByColor(TicTacToeState state) {
+		if(state.getPlayerToMove().equals("X"))
+			return new String("Red");
+		else
+			return new String("White");
+	}
 
 	@Override
 	public List<XYLocation> getActions(TicTacToeState state) {
@@ -38,6 +45,13 @@ public class TicTacToeGame implements Game<TicTacToeState, XYLocation, String> {
 	public TicTacToeState getResult(TicTacToeState state, XYLocation action) {
 		TicTacToeState result = state.clone();
 		result.mark(action);
+		return result;
+	}
+	
+	@Override
+	public TicTacToeState getResult(TicTacToeState state, XYLocation action_select, XYLocation action_move_to) {
+		TicTacToeState result = state.clone();
+		result.mark(action_select,action_move_to);
 		return result;
 	}
 
