@@ -113,8 +113,6 @@ public class CheckersApp {
 					evenRow = !evenRow;
 				int myInt = (evenRow) ? 1 : 0;
 
-				// square.setFont(f);
-				// square.setIcon(icon_red);
 				if ((i + myInt) % 2 == 0)
 					square.setBackground(new Color(182, 155, 76));
 				else
@@ -157,7 +155,7 @@ public class CheckersApp {
 						String currSeletPiece = currState.getValue(selected_piece);
 						if (currSeletPiece.equals("EMPTY") || !currSeletPiece.equals(nextPlayer)) {
 							repick_piece = true;
-							statusBar.setText("Invalid position, You must select a " + nextPlayerColor + " piece!");
+							statusBar.setText("Invalid piece, You must select a " + nextPlayerColor + " piece!");
 						} else
 							statusBar.setText(nextPlayerColor + " was selected ");
 
@@ -165,8 +163,18 @@ public class CheckersApp {
 						// second click: select move to position
 						for (int i = 0; i < 64; i++)
 							if (ae.getSource() == squares[i]) {
-								CheckerAction cAction = new CheckerAction(selected_piece, new XYLocation(i % 8, i / 8));
-								currState = game.getResult(currState, cAction);
+								XYLocation destination =new XYLocation(i % 8, i / 8);
+								CheckerAction cAction = new CheckerAction(selected_piece, destination);
+								
+								if(currState.getFeasiblePositions(selected_piece).contains(destination))
+								{
+									currState = game.getResult(currState, cAction);
+								}
+								else
+								{
+									repick_piece=true;
+									statusBar.setText("Invalid position, You must select a feasible destination!");
+								}
 								break;
 							}
 					}

@@ -51,6 +51,12 @@ public class CheckersState implements Cloneable {
 
 		dismark(from_pos.getXCoOrdinate(), from_pos.getYCoOrdinate());
 		mark(to_pos.getXCoOrdinate(), to_pos.getYCoOrdinate());
+
+		if (Math.abs(to_pos.getXCoOrdinate() - from_pos.getXCoOrdinate()) == 2) {
+			int midx = (from_pos.getXCoOrdinate() + to_pos.getXCoOrdinate()) / 2;
+			int midy = (from_pos.getYCoOrdinate() + to_pos.getYCoOrdinate()) / 2;
+			dismark(midx, midy);
+		}
 	}
 
 	public void dismark(int col, int row) {
@@ -142,31 +148,88 @@ public class CheckersState implements Cloneable {
 		return retVal;
 	}
 
+	public boolean isForward(XYLocation origin, XYLocation destination)
+	{
+		if(getPlayerToMove().equals(X)) // red
+		{
+			if(destination.getYCoOrdinate() - origin.getYCoOrdinate() >0 )
+				return true;
+			else 
+				return false;
+		}
+		else if (getPlayerToMove().equals(O))// white
+		{
+			if(destination.getYCoOrdinate() - origin.getYCoOrdinate() <0 )
+				return true;
+			else
+				return false;
+		}
+		else
+		{
+			 System.out.println("Error in isForward()!");
+			 return false;
+		}
+			
+	}
+	
+	public List<XYLocation> getFeasiblePositions(XYLocation selNode) {
+
+		List<XYLocation> result = new ArrayList<XYLocation>();
+
+		if (getValue(selNode).equals(playerToMove)) {
+			int col = selNode.getXCoOrdinate();
+			int row = selNode.getYCoOrdinate();
+			List<XYLocation> moveToPos = new ArrayList<XYLocation>();
+			// first, check the four corners
+			moveToPos.add(new XYLocation(col - 1, row - 1));
+			moveToPos.add(new XYLocation(col - 1, row + 1));
+			moveToPos.add(new XYLocation(col + 1, row + 1));
+			moveToPos.add(new XYLocation(col + 1, row - 1));
+			for (XYLocation pos : moveToPos) {
+				if (pos.isWithinBoundary(0, 7))
+					if (getValue(pos).equals(EMPTY))
+						if(isForward(selNode, pos))
+						result.add(pos);
+			}
+			moveToPos.clear();
+			// second, check if it can jump
+			String opponent = (playerToMove == X ? O : X);
+			moveToPos.add(new XYLocation(col - 2, row - 2));
+			moveToPos.add(new XYLocation(col - 2, row + 2));
+			moveToPos.add(new XYLocation(col + 2, row + 2));
+			moveToPos.add(new XYLocation(col + 2, row - 2));
+			for (XYLocation pos : moveToPos) {
+				int xCoord = pos.getXCoOrdinate();
+				int yCoord = pos.getYCoOrdinate();
+				if (pos.isWithinBoundary(0, 7))
+					if (getValue(pos).equals(EMPTY)) {
+						int mid_x = (col + xCoord) / 2;
+						int mid_y = (row + yCoord) / 2;
+						if (getValue(mid_x, mid_y).equals(opponent))
+							if(isForward(selNode, pos))
+								result.add(pos);
+					}
+			}
+		}
+
+		return result;
+	}
+
 	public List<CheckerAction> getFeasiblePositions() {
 
 		List<CheckerAction> result = new ArrayList<CheckerAction>();
 
 		for (int col = 0; col < 8; col++) {
 			for (int row = 0; row < 8; row++) {
-				if (getValue(col,row).equals(playerToMove))
+				XYLocation currNode = new XYLocation(col,row);
+				List<XYLocation> feasibleLocOfNode =getFeasiblePositions(currNode);
+				for(XYLocation moveToPos:feasibleLocOfNode)
 				{
-					List<XYLocation> moveToPos = new ArrayList<XYLocation>();
-					moveToPos.add(new XYLocation(col-1,row-1));
-					moveToPos.add(new XYLocation(col-1,row+1));
-					moveToPos.add(new XYLocation(col+1,row+1));
-					moveToPos.add(new XYLocation(col+1,row-1));
-					for(XYLocation pos: moveToPos)
-					{
-						if(pos.isWithinBoundary(0, 7))
-						if(getValue(pos.getXCoOrdinate(),pos.getYCoOrdinate()).equals(EMPTY))
-							result.add(new CheckerAction(new XYLocation(col,row), pos));
-					}
-					
+					result.add(new CheckerAction(currNode,moveToPos));
 				}
 			}
 		}
-		
-		
+
 		return result;
 	}
 
