@@ -10,26 +10,26 @@ import java.util.List;
  * @author Ruediger Lunde
  * 
  */
-public class TicTacToeGame implements Game<TicTacToeState, XYLocation, String> {
+public class CheckersGame implements Game<CheckersState, CheckerAction, String> {
 
-	TicTacToeState initialState = new TicTacToeState();
+	CheckersState initialState = new CheckersState();
 
 	@Override
-	public TicTacToeState getInitialState() {
+	public CheckersState getInitialState() {
 		return initialState;
 	}
 
 	@Override
 	public String[] getPlayers() {
-		return new String[] { TicTacToeState.X, TicTacToeState.O };
+		return new String[] { CheckersState.X, CheckersState.O };
 	}
 
 	@Override
-	public String getPlayer(TicTacToeState state) {
+	public String getPlayer(CheckersState state) {
 		return state.getPlayerToMove();
 	}
 	
-	public String getPlayerByColor(TicTacToeState state) {
+	public String getPlayerByColor(CheckersState state) {
 		if(state.getPlayerToMove().equals("X"))
 			return new String("Red");
 		else
@@ -37,31 +37,31 @@ public class TicTacToeGame implements Game<TicTacToeState, XYLocation, String> {
 	}
 
 	@Override
-	public List<XYLocation> getActions(TicTacToeState state) {
-		return state.getUnMarkedPositions();
+	public List<CheckerAction> getActions(CheckersState state) {
+		return state.getFeasiblePositions();
 	}
 
 	@Override
-	public TicTacToeState getResult(TicTacToeState state, XYLocation action) {
-		TicTacToeState result = state.clone();
+	public CheckersState getResult(CheckersState state, CheckerAction action) {
+		CheckersState result = state.clone();
 		result.mark(action);
 		return result;
 	}
 	
 	@Override
-	public TicTacToeState getResult(TicTacToeState state, XYLocation action_select, XYLocation action_move_to) {
-		TicTacToeState result = state.clone();
-		result.mark(action_select,action_move_to);
+	public CheckersState getResult(CheckersState state, CheckerAction action_select, CheckerAction action_move_to) {
+		// this function was deprecated, do not use.
+		CheckersState result = state.clone();
 		return result;
 	}
 
 	@Override
-	public boolean isTerminal(TicTacToeState state) {
+	public boolean isTerminal(CheckersState state) {
 		return state.getUtility() != -1;
 	}
 
 	@Override
-	public boolean needsCutOff(TicTacToeState state)
+	public boolean needsCutOff(CheckersState state)
 	{
 		int depth = state.getNumberOfMarkedPositions();
 		int rest_moves = 64-depth;
@@ -73,10 +73,10 @@ public class TicTacToeGame implements Game<TicTacToeState, XYLocation, String> {
 	}
 	
 	@Override
-	public double getUtility(TicTacToeState state, String player) {
+	public double getUtility(CheckersState state, String player) {
 		double result = state.getUtility();
 		if (result != -1) {
-			if (player == TicTacToeState.O)
+			if (player == CheckersState.O)
 				result = 1 - result;
 		} else {
 			throw new IllegalArgumentException("State is not terminal.");
@@ -85,7 +85,7 @@ public class TicTacToeGame implements Game<TicTacToeState, XYLocation, String> {
 	}
 	
 	@Override
-	public int getEvaluation(TicTacToeState state, String player)
+	public int getEvaluation(CheckersState state, String player)
 	{
 		int result;
 		
@@ -93,7 +93,7 @@ public class TicTacToeGame implements Game<TicTacToeState, XYLocation, String> {
 		int num_black = state.getNumberOfBlackPieces();
 		int num_white = markedPositions- num_black;
 		
-		if (player == TicTacToeState.X)
+		if (player == CheckersState.X)
 			result = num_black - num_white;
 		else
 			result = num_white - num_black;
@@ -101,3 +101,4 @@ public class TicTacToeGame implements Game<TicTacToeState, XYLocation, String> {
 		return result;
 	}
 }
+

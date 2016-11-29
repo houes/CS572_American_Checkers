@@ -26,12 +26,12 @@ import javax.swing.JToolBar;
  * 
  * @author Ruediger Lunde
  */
-public class TicTacToeApp {
+public class CheckersApp {
 
 	/** Used for integration into the universal demo application. */
 	public JFrame constructApplicationFrame() {
 		JFrame frame = new JFrame();
-		JPanel panel = new TicTacToePanel();
+		JPanel panel = new CheckersPanel();
 		frame.add(panel, BorderLayout.CENTER);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		return frame;
@@ -39,13 +39,13 @@ public class TicTacToeApp {
 
 	/** Application starter. */
 	public static void main(String[] args) {
-		JFrame frame = new TicTacToeApp().constructApplicationFrame();
+		JFrame frame = new CheckersApp().constructApplicationFrame();
 		frame.setSize(800, 800);
 		frame.setVisible(true);
 	}
 
 	/** Simple panel to control the game. */
-	private static class TicTacToePanel extends JPanel implements ActionListener {
+	private static class CheckersPanel extends JPanel implements ActionListener {
 		private static final long serialVersionUID = 1L;
 		JComboBox<String> strategyCombo;
 		JButton clearButton;
@@ -53,8 +53,8 @@ public class TicTacToeApp {
 		JButton[] squares;
 		JLabel statusBar;
 
-		TicTacToeGame game;
-		TicTacToeState currState;
+		CheckersGame game;
+		CheckersState currState;
 		Metrics searchMetrics;
 
 		ImageIcon icon_red;
@@ -69,7 +69,7 @@ public class TicTacToeApp {
 							// position
 
 		/** Standard constructor. */
-		TicTacToePanel() {
+		CheckersPanel() {
 			this.setLayout(new BorderLayout());
 			JToolBar tbar = new JToolBar();
 			tbar.setFloatable(false);
@@ -128,7 +128,7 @@ public class TicTacToeApp {
 			statusBar.setBorder(BorderFactory.createEtchedBorder());
 			add(statusBar, BorderLayout.SOUTH);
 
-			game = new TicTacToeGame();
+			game = new CheckersGame();
 			actionPerformed(null);
 		}
 
@@ -165,7 +165,8 @@ public class TicTacToeApp {
 						// second click: select move to position
 						for (int i = 0; i < 64; i++)
 							if (ae.getSource() == squares[i]) {
-								currState = game.getResult(currState, selected_piece, new XYLocation(i % 8, i / 8));
+								CheckerAction cAction = new CheckerAction(selected_piece, new XYLocation(i % 8, i / 8));
+								currState = game.getResult(currState, cAction);
 								break;
 							}
 					}
@@ -175,7 +176,7 @@ public class TicTacToeApp {
 			if (ae == null || ae.getSource() == clearButton || isProposedMove || !select_mode) {
 				for (int i = 0; i < 64; i++) {
 					String val = currState.getValue(i % 8, i / 8);
-					if (val == TicTacToeState.EMPTY)
+					if (val == CheckersState.EMPTY)
 						val = "";
 
 					if (val.equals("X"))
@@ -199,8 +200,8 @@ public class TicTacToeApp {
 
 		/** Uses adversarial search for selecting the next action. */
 		private void proposeMove() {
-			AdversarialSearch<TicTacToeState, XYLocation> search;
-			XYLocation action;
+			AdversarialSearch<CheckersState, CheckerAction> search;
+			CheckerAction action;
 			switch (strategyCombo.getSelectedIndex()) {
 			case 0:
 				search = MinimaxSearch.createFor(game);
@@ -224,9 +225,9 @@ public class TicTacToeApp {
 		private void updateStatus() {
 			String statusText;
 			if (game.isTerminal(currState))
-				if (game.getUtility(currState, TicTacToeState.X) == 1)
+				if (game.getUtility(currState, CheckersState.X) == 1)
 					statusText = "X has won :-)";
-				else if (game.getUtility(currState, TicTacToeState.O) == 1)
+				else if (game.getUtility(currState, CheckersState.O) == 1)
 					statusText = "O has won :-)";
 				else
 					statusText = "No winner...";

@@ -11,19 +11,15 @@ import java.util.List;
  * @author Ruediger Lunde
  * 
  */
-public class TicTacToeState implements Cloneable {
+public class CheckersState implements Cloneable {
 	public static final String O = "O";
 	public static final String X = "X";
 	public static final String EMPTY = "-";
 	//
-	private String[] board = new String[] { EMPTY, X, EMPTY, X, EMPTY, X, EMPTY, X, 
-			X, EMPTY, X, EMPTY, X, EMPTY, X, EMPTY,
-			EMPTY, X, EMPTY, X, EMPTY, X, EMPTY, X,
-			EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,
-			EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,
-			O, EMPTY, O, EMPTY, O, EMPTY, O, EMPTY,
-			EMPTY, O, EMPTY, O, EMPTY, O, EMPTY, O,
-			O, EMPTY, O, EMPTY, O, EMPTY, O, EMPTY};
+	private String[] board = new String[] { EMPTY, X, EMPTY, X, EMPTY, X, EMPTY, X, X, EMPTY, X, EMPTY, X, EMPTY, X,
+			EMPTY, EMPTY, X, EMPTY, X, EMPTY, X, EMPTY, X, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,
+			EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, O, EMPTY, O, EMPTY, O, EMPTY, O, EMPTY, EMPTY, O,
+			EMPTY, O, EMPTY, O, EMPTY, O, O, EMPTY, O, EMPTY, O, EMPTY, O, EMPTY };
 
 	private String playerToMove = X;
 	private double utility = -1; // 1: win for X, 0: win for O, 0.5: draw
@@ -31,7 +27,7 @@ public class TicTacToeState implements Cloneable {
 	public String getPlayerToMove() {
 		return playerToMove;
 	}
-	
+
 	public boolean isEmpty(int col, int row) {
 		return board[getAbsPosition(col, row)] == EMPTY;
 	}
@@ -39,7 +35,7 @@ public class TicTacToeState implements Cloneable {
 	public String getValue(int col, int row) {
 		return board[getAbsPosition(col, row)];
 	}
-	
+
 	public String getValue(XYLocation pos) {
 		return getValue(pos.getXCoOrdinate(), pos.getYCoOrdinate());
 	}
@@ -48,23 +44,21 @@ public class TicTacToeState implements Cloneable {
 		return utility;
 	}
 
-	public void mark(XYLocation action) {
-		mark(action.getXCoOrdinate(), action.getYCoOrdinate());
-	}
-	
-	public void mark(XYLocation from_pos, XYLocation to_pos) {
-		dismark(from_pos.getXCoOrdinate(),from_pos.getYCoOrdinate());
+	public void mark(CheckerAction action) {
+
+		XYLocation from_pos = action.getSelNode();
+		XYLocation to_pos = action.getMoveTo();
+
+		dismark(from_pos.getXCoOrdinate(), from_pos.getYCoOrdinate());
 		mark(to_pos.getXCoOrdinate(), to_pos.getYCoOrdinate());
 	}
 
-	public void dismark(int col, int row)
-	{
-		if(utility == -1 && board[getAbsPosition(col, row)] == playerToMove)
-		{
+	public void dismark(int col, int row) {
+		if (utility == -1 && board[getAbsPosition(col, row)] == playerToMove) {
 			board[getAbsPosition(col, row)] = EMPTY;
 		}
 	}
-	
+
 	public void mark(int col, int row) {
 		if (utility == -1 && getValue(col, row) == EMPTY) {
 			board[getAbsPosition(col, row)] = playerToMove;
@@ -84,14 +78,13 @@ public class TicTacToeState implements Cloneable {
 	public boolean lineThroughBoard() {
 		return (isAnyRowComplete() || isAnyColumnComplete() || isAnyDiagonalComplete());
 	}
-	
+
 	private boolean isAnyRowComplete() {
 		for (int row = 0; row < 8; row++) {
 			String val = getValue(0, row);
-			if (val != EMPTY && val == getValue(1, row) && val == getValue(2, row) 
-				&& val == getValue(3, row) && val == getValue(4, row) && val == getValue(5, row)
-				&& val == getValue(6, row) && val == getValue(7, row) ) 
-			{
+			if (val != EMPTY && val == getValue(1, row) && val == getValue(2, row) && val == getValue(3, row)
+					&& val == getValue(4, row) && val == getValue(5, row) && val == getValue(6, row)
+					&& val == getValue(7, row)) {
 				return true;
 			}
 		}
@@ -101,10 +94,9 @@ public class TicTacToeState implements Cloneable {
 	private boolean isAnyColumnComplete() {
 		for (int col = 0; col < 8; col++) {
 			String val = getValue(col, 0);
-			if (val != EMPTY && val == getValue(col, 1) && val == getValue(col, 2)
-				&& val == getValue(col, 3) && val == getValue(col, 4) && val == getValue(col, 5) 
-				&& val == getValue(col, 6) && val == getValue(col, 7) ) 
-			{
+			if (val != EMPTY && val == getValue(col, 1) && val == getValue(col, 2) && val == getValue(col, 3)
+					&& val == getValue(col, 4) && val == getValue(col, 5) && val == getValue(col, 6)
+					&& val == getValue(col, 7)) {
 				return true;
 			}
 		}
@@ -114,16 +106,13 @@ public class TicTacToeState implements Cloneable {
 	private boolean isAnyDiagonalComplete() {
 		boolean retVal = false;
 		String val = getValue(0, 0);
-		if (val != EMPTY && val == getValue(1, 1) && val == getValue(2, 2) 
-			&& val == getValue(3, 3) && val == getValue(4, 4) && val == getValue(5, 5)
-			&& val == getValue(6, 6) && val == getValue(7, 7)) 
-		{
+		if (val != EMPTY && val == getValue(1, 1) && val == getValue(2, 2) && val == getValue(3, 3)
+				&& val == getValue(4, 4) && val == getValue(5, 5) && val == getValue(6, 6) && val == getValue(7, 7)) {
 			return true;
 		}
 		val = getValue(0, 7);
-		if (val != EMPTY && val == getValue(1, 6) && val == getValue(2, 5) 
-			&& val == getValue(3, 4) && val == getValue(4, 3) && val == getValue(5, 2)
-			&& val == getValue(6, 1) && val == getValue(7, 0)) {
+		if (val != EMPTY && val == getValue(1, 6) && val == getValue(2, 5) && val == getValue(3, 4)
+				&& val == getValue(4, 3) && val == getValue(5, 2) && val == getValue(6, 1) && val == getValue(7, 0)) {
 			return true;
 		}
 		return retVal;
@@ -140,13 +129,12 @@ public class TicTacToeState implements Cloneable {
 		}
 		return retVal;
 	}
-	
-	public int getNumberOfBlackPieces()
-	{		
+
+	public int getNumberOfBlackPieces() {
 		int retVal = 0;
 		for (int col = 0; col < 8; col++) {
 			for (int row = 0; row < 8; row++) {
-				if ( getValue(col, row).equals("X") ) {
+				if (getValue(col, row).equals("X")) {
 					retVal++;
 				}
 			}
@@ -154,23 +142,39 @@ public class TicTacToeState implements Cloneable {
 		return retVal;
 	}
 
-	public List<XYLocation> getUnMarkedPositions() {
-		List<XYLocation> result = new ArrayList<XYLocation>();
+	public List<CheckerAction> getFeasiblePositions() {
+
+		List<CheckerAction> result = new ArrayList<CheckerAction>();
+
 		for (int col = 0; col < 8; col++) {
 			for (int row = 0; row < 8; row++) {
-				if (isEmpty(col, row)) {
-					result.add(new XYLocation(col, row));
+				if (getValue(col,row).equals(playerToMove))
+				{
+					List<XYLocation> moveToPos = new ArrayList<XYLocation>();
+					moveToPos.add(new XYLocation(col-1,row-1));
+					moveToPos.add(new XYLocation(col-1,row+1));
+					moveToPos.add(new XYLocation(col+1,row+1));
+					moveToPos.add(new XYLocation(col+1,row-1));
+					for(XYLocation pos: moveToPos)
+					{
+						if(pos.isWithinBoundary(0, 7))
+						if(getValue(pos.getXCoOrdinate(),pos.getYCoOrdinate()).equals(EMPTY))
+							result.add(new CheckerAction(new XYLocation(col,row), pos));
+					}
+					
 				}
 			}
 		}
+		
+		
 		return result;
 	}
 
 	@Override
-	public TicTacToeState clone() {
-		TicTacToeState copy = null;
+	public CheckersState clone() {
+		CheckersState copy = null;
 		try {
-			copy = (TicTacToeState) super.clone();
+			copy = (CheckersState) super.clone();
 			copy.board = Arrays.copyOf(board, board.length);
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace(); // should never happen...
@@ -181,7 +185,7 @@ public class TicTacToeState implements Cloneable {
 	@Override
 	public boolean equals(Object anObj) {
 		if (anObj != null && anObj.getClass() == getClass()) {
-			TicTacToeState anotherState = (TicTacToeState) anObj;
+			CheckersState anotherState = (CheckersState) anObj;
 			for (int i = 0; i < 64; i++) {
 				if (board[i] != anotherState.board[i]) {
 					return false;
@@ -191,7 +195,7 @@ public class TicTacToeState implements Cloneable {
 		}
 		return false;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		// Need to ensure equal objects have equivalent hashcodes (Issue 77).
