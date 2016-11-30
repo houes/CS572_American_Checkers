@@ -109,7 +109,7 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 		return result;
 	}
 	
-	@Override
+
 	public int getPatternVal(CheckersState state, String player, int num){
 		int value=0;
 		if(player.equals('O')){			
