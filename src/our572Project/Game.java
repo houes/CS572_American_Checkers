@@ -38,7 +38,7 @@ import java.util.List;
  *            Type which is used for players in the game.
  */
 public interface Game<STATE, ACTION, PLAYER> {
-
+   //game class
 	STATE getInitialState();
 
 	PLAYER[] getPlayers();
