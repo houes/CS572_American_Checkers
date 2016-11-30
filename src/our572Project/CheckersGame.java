@@ -80,6 +80,7 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 	@Override
 	public int getEvaluation(CheckersState state, String player)
 	{
+		//This is a comment
 		int result;
 		
 		int markedPositions = state.getNumberOfMarkedPositions();
