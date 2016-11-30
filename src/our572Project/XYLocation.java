@@ -41,6 +41,14 @@ public class XYLocation {
 		return yCoOrdinate;
 	}
 
+	public boolean isWithinBoundary(int lowerBound, int upperBound) {
+		if (xCoOrdinate >= lowerBound && xCoOrdinate <= upperBound && yCoOrdinate >= lowerBound
+				&& yCoOrdinate <= upperBound)
+			return true;
+		else
+			return false;
+	}
+
 	/**
 	 * Returns the location one unit left of this location.
 	 * 
@@ -143,8 +151,7 @@ public class XYLocation {
 			return super.equals(o);
 		}
 		XYLocation anotherLoc = (XYLocation) o;
-		return ((anotherLoc.getXCoOrdinate() == xCoOrdinate) && (anotherLoc
-				.getYCoOrdinate() == yCoOrdinate));
+		return ((anotherLoc.getXCoOrdinate() == xCoOrdinate) && (anotherLoc.getYCoOrdinate() == yCoOrdinate));
 	}
 
 	@Override

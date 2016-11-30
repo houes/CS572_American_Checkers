@@ -38,7 +38,7 @@ import java.util.List;
  *            Type which is used for players in the game.
  */
 public interface Game<STATE, ACTION, PLAYER> {
-
+   //game class
 	STATE getInitialState();
 
 	PLAYER[] getPlayers();
@@ -53,7 +53,7 @@ public interface Game<STATE, ACTION, PLAYER> {
 
 	boolean needsCutOff(STATE state);
 	
-	int getEvaluation(STATE state, PLAYER player);
+	int getEvaluation(STATE state, PLAYER player, int num);
 	
 	double getUtility(STATE state, PLAYER player);
 }
