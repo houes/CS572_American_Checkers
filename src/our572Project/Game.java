@@ -53,7 +53,7 @@ public interface Game<STATE, ACTION, PLAYER> {
 
 	boolean needsCutOff(STATE state);
 	
-	int getEvaluation(STATE state, PLAYER player);
+	int getEvaluation(STATE state, PLAYER player, int num);
 	
 	double getUtility(STATE state, PLAYER player);
 }

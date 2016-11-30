@@ -78,21 +78,81 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 	}
 	
 	@Override
-	public int getEvaluation(CheckersState state, String player)
+	public int getEvaluation(CheckersState state, String player, int num)
 	{
-		//This is a comment
-		int result;
+		if (num < 0 || num > 4)
+		{
+			return -1;
+		}
+		
+		int result = 0;
+		
+		if (num == 0)
+		{
+			//The naive evaluation function
+			result = evalFunc0(state, player);
+		}
+		else if (num == 1)
+		{
+			//Evaluation function 1
+			result = evalFunc1(state, player);
+		}
+		else
+		{
+			int simpleFeature = getSimpleFeature(state, player);
+			int layoutFeature = getLayoutFeature(state, player);
+			int patternFeature = getPatternFeature(state, player);
+			
+			result = simpleFeature + layoutFeature + patternFeature;
+		}
+		
+		return result;
+	}
+	
+	public int evalFunc0(CheckersState state, String player)
+	{
+		int res = 0;
 		
 		int markedPositions = state.getNumberOfMarkedPositions();
 		int num_red = state.getNumberOfPieces("X");
-		int num_white = markedPositions- num_red;
+		int num_white = markedPositions - num_red;
 		
 		if (player == CheckersState.X)
-			result = num_red - num_white;
+			res = num_red - num_white;
 		else
-			result = num_white - num_red;
+			res = num_white - num_red;
 		
-		return result;
+		return res;
+	}
+	
+	public int evalFunc1(CheckersState state, String player)
+	{
+		int res = 0;
+		
+		
+		
+		return res;
+	}
+	
+	public int getSimpleFeature(CheckersState state, String player)
+	{
+		int score = 0;
+		
+		return score;
+	}
+	
+	public int getLayoutFeature(CheckersState state, String player)
+	{
+		int score = 0;
+		
+		return score;
+	}
+	
+	public int getPatternFeature(CheckersState state, String player)
+	{
+		int score = 0;
+		
+		return score;
 	}
 }
 
