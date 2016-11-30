@@ -185,49 +185,6 @@ public class CheckersState implements Cloneable {
 			return false;
 	}
 
-	public boolean lineThroughBoard() {
-		return (isAnyRowComplete() || isAnyColumnComplete() || isAnyDiagonalComplete());
-	}
-
-	private boolean isAnyRowComplete() {
-		for (int row = 0; row < 8; row++) {
-			String val = getValue(0, row);
-			if (val != EMPTY && val == getValue(1, row) && val == getValue(2, row) && val == getValue(3, row)
-					&& val == getValue(4, row) && val == getValue(5, row) && val == getValue(6, row)
-					&& val == getValue(7, row)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private boolean isAnyColumnComplete() {
-		for (int col = 0; col < 8; col++) {
-			String val = getValue(col, 0);
-			if (val != EMPTY && val == getValue(col, 1) && val == getValue(col, 2) && val == getValue(col, 3)
-					&& val == getValue(col, 4) && val == getValue(col, 5) && val == getValue(col, 6)
-					&& val == getValue(col, 7)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private boolean isAnyDiagonalComplete() {
-		boolean retVal = false;
-		String val = getValue(0, 0);
-		if (val != EMPTY && val == getValue(1, 1) && val == getValue(2, 2) && val == getValue(3, 3)
-				&& val == getValue(4, 4) && val == getValue(5, 5) && val == getValue(6, 6) && val == getValue(7, 7)) {
-			return true;
-		}
-		val = getValue(0, 7);
-		if (val != EMPTY && val == getValue(1, 6) && val == getValue(2, 5) && val == getValue(3, 4)
-				&& val == getValue(4, 3) && val == getValue(5, 2) && val == getValue(6, 1) && val == getValue(7, 0)) {
-			return true;
-		}
-		return retVal;
-	}
-
 	public int getNumberOfMarkedPositions() {
 		int retVal = 0;
 		for (int col = 0; col < 8; col++) {

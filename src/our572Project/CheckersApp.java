@@ -2,7 +2,7 @@ package our572Project;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Font;
+//import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -67,9 +67,6 @@ public class CheckersApp {
 									// move to a position
 		XYLocation selected_piece; // record the selected piece
 
-		String WarningMsg; // warn the user if he/she clicks on a invalid
-							// position
-
 		/** Standard constructor. */
 		CheckersPanel() {
 			this.setLayout(new BorderLayout());
@@ -92,7 +89,7 @@ public class CheckersApp {
 			spanel.setLayout(new GridLayout(8, 8));
 			add(spanel, BorderLayout.CENTER);
 			squares = new JButton[64];
-			Font f = new java.awt.Font(Font.SANS_SERIF, Font.PLAIN, 32);
+			//Font f = new java.awt.Font(Font.SANS_SERIF, Font.PLAIN, 32);
 			try {
 				int ICON_WIDTH = 60;
 				int ICON_HEIGHT = 60;
@@ -242,7 +239,6 @@ public class CheckersApp {
 			action = search.makeDecision(currState);
 			searchMetrics = search.getMetrics();
 			currState = game.getResult(currState, action);
-			int a=1;
 		}
 
 		/** Updates the status bar. */
