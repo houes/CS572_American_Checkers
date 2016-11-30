@@ -179,7 +179,7 @@ public class CheckersState implements Cloneable {
 
 		String opponent = (playerToMove == X ? O : X);
 
-		if (getFeasiblePositions(opponent).isEmpty())
+		if (getFeasibleMoves(opponent).isEmpty())
 			return true;
 		else
 			return false;
@@ -237,13 +237,19 @@ public class CheckersState implements Cloneable {
 
 	public List<XYLocation> getFeasiblePositions(XYLocation selNode, String player) {
 
-		List<XYLocation> result = new ArrayList<XYLocation>();
+		// Compute the feasible destinations for a piece
+		// If the feasible moves includes only regular moves, output it.
+		// If the feasible moves includes both regular and jump moves, output only jump moves.
+		// If the feasible moves includes only jump moves, output it.
+		
+		List<XYLocation> result_regular = new ArrayList<XYLocation>();
+		List<XYLocation> result_jump = new ArrayList<XYLocation>();
 
 		if (getValue(selNode).equals(player)) {
 			int col = selNode.getXCoOrdinate();
 			int row = selNode.getYCoOrdinate();
 			List<XYLocation> moveToPos = new ArrayList<XYLocation>();
-			// first, check the four corners
+			// first, check the four corners(regular moves)
 			moveToPos.add(new XYLocation(col - 1, row - 1));
 			moveToPos.add(new XYLocation(col - 1, row + 1));
 			moveToPos.add(new XYLocation(col + 1, row + 1));
@@ -253,13 +259,13 @@ public class CheckersState implements Cloneable {
 					if (getValue(pos).equals(EMPTY))
 					{
 						if(isKing(selNode))
-							result.add(pos);
+							result_regular.add(pos);
 						else if (isForward(selNode, pos, player))
-							result.add(pos);
+							result_regular.add(pos);
 					}
 			}
 			moveToPos.clear();
-			// second, check if it can jump
+			// second, check if it can jump(jump moves)
 			String opponent = (player == X ? O : X);
 			moveToPos.add(new XYLocation(col - 2, row - 2));
 			moveToPos.add(new XYLocation(col - 2, row + 2));
@@ -275,25 +281,61 @@ public class CheckersState implements Cloneable {
 						if (getValue(mid_x, mid_y).equals(opponent))
 						{
 							if(isKing(selNode))
-								result.add(pos);
+								result_jump.add(pos);
 							else if (isForward(selNode, pos, player))
-								result.add(pos);
+								result_jump.add(pos);
 						}
 					}
 			}
 		}
 
-		return result;
+		if(!result_jump.isEmpty())
+			return result_jump;
+		else
+			return result_regular;
 	}
 
-	public List<CheckerAction> getFeasiblePositions() {
+	public List<CheckerAction> getJumpMoves(List<CheckerAction> allFeasibleMoves)
+	{
+		List<CheckerAction> jumpMoves = new ArrayList<CheckerAction>();
+		
+		for(CheckerAction action: allFeasibleMoves)
+		{
+			int x1 = action.getMoveTo().getXCoOrdinate();
+			int x2 = action.getSelNode().getXCoOrdinate();
+			if( Math.abs(x1-x2)==2 )
+			{
+				jumpMoves.add(action);
+			}
+		}
+		
+		return jumpMoves;
+	}
+	
+	public List<XYLocation> getFeasibleMovesFirstNodes()
+	{
+		List<XYLocation> allFirstNodes = new ArrayList<XYLocation>();
+		List<CheckerAction> allFeasibleMoves = getFeasibleMoves();
+		
+		for(CheckerAction action: allFeasibleMoves)
+		{
+			allFirstNodes.add(action.getSelNode());
+		}
+		
+		return allFirstNodes;
+	}
+	
+	public List<CheckerAction> getFeasibleMoves() {
 
-		return getFeasiblePositions(getPlayerToMove());
+		return getFeasibleMoves(getPlayerToMove());
 	}
 
-	public List<CheckerAction> getFeasiblePositions(String player) {
+	public List<CheckerAction> getFeasibleMoves(String player) {
 
-		List<CheckerAction> result = new ArrayList<CheckerAction>();
+		// Compute feasible moves for a player
+		// If there is any jump move, return all jump moves, otherwise return regular moves.
+		
+		List<CheckerAction> allFeasibleMoves = new ArrayList<CheckerAction>();
 
 		for (int col = 0; col < 8; col++) {
 			for (int row = 0; row < 8; row++) {
@@ -301,13 +343,18 @@ public class CheckersState implements Cloneable {
 					XYLocation currNode = new XYLocation(col, row);
 					List<XYLocation> feasibleLocOfNode = getFeasiblePositions(currNode, player);
 					for (XYLocation moveToPos : feasibleLocOfNode) {
-						result.add(new CheckerAction(currNode, moveToPos));
+						allFeasibleMoves.add(new CheckerAction(currNode, moveToPos));
 					}
 				}
 			}
 		}
 
-		return result;
+		List<CheckerAction> jumpMoves = getJumpMoves(allFeasibleMoves);
+		
+		if(!jumpMoves.isEmpty())
+			return jumpMoves;
+		else
+			return allFeasibleMoves; // all regular moves
 	}
 
 	@Override

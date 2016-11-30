@@ -38,7 +38,7 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 
 	@Override
 	public List<CheckerAction> getActions(CheckersState state) {
-		return state.getFeasiblePositions();
+		return state.getFeasibleMoves();
 	}
 
 	@Override

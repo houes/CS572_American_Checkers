@@ -89,7 +89,7 @@ public class CheckersApp {
 			spanel.setLayout(new GridLayout(8, 8));
 			add(spanel, BorderLayout.CENTER);
 			squares = new JButton[64];
-			//Font f = new java.awt.Font(Font.SANS_SERIF, Font.PLAIN, 32);
+			// Font f = new java.awt.Font(Font.SANS_SERIF, Font.PLAIN, 32);
 			try {
 				int ICON_WIDTH = 60;
 				int ICON_HEIGHT = 60;
@@ -159,12 +159,14 @@ public class CheckersApp {
 						if (currSeletPiece.equals("EMPTY") || !currSeletPiece.equals(nextPlayer)) {
 							repick_piece = true;
 							statusBar.setText("Invalid piece, You must select a " + nextPlayerColor + " piece!");
-						} else if(currState.getFeasiblePositions(selected_piece).isEmpty())
+						} else if (currState.getFeasiblePositions(selected_piece).isEmpty()) {
+							repick_piece = true;
+							statusBar.setText("Invalid " + nextPlayerColor + " piece, it cannot move, repick!");
+						} else if(!currState.getFeasibleMovesFirstNodes().contains(selected_piece))
 						{
 							repick_piece = true;
-							statusBar.setText("Invalid "+nextPlayerColor+" piece, it cannot move, repick!");
-						}
-						else
+							statusBar.setText("You have mandatory jump move, repick! current turn: "+nextPlayerColor);
+						}else
 							statusBar.setText(nextPlayerColor + " was selected ");
 
 					} else {
