@@ -162,11 +162,10 @@ public class CheckersApp {
 						} else if (currState.getFeasiblePositions(selected_piece).isEmpty()) {
 							repick_piece = true;
 							statusBar.setText("Invalid " + nextPlayerColor + " piece, it cannot move, repick!");
-						} else if(!currState.getFeasibleMovesFirstNodes().contains(selected_piece))
-						{
+						} else if (!currState.getFeasibleMovesFirstNodes().contains(selected_piece)) {
 							repick_piece = true;
-							statusBar.setText("You have mandatory jump move, repick! current turn: "+nextPlayerColor);
-						}else
+							statusBar.setText("You have mandatory jump move, repick! current turn: " + nextPlayerColor);
+						} else
 							statusBar.setText(nextPlayerColor + " was selected ");
 
 					} else {
@@ -180,7 +179,9 @@ public class CheckersApp {
 									currState = game.getResult(currState, cAction);
 								} else {
 									repick_piece = true;
-									statusBar.setText("Invalid position, You must select a feasible destination!");
+									statusBar.setText(
+											"Invalid position, You must select a feasible destination, jump is mandatory! current turn: "
+													+ game.getPlayerByColor(currState));
 								}
 								break;
 							}
