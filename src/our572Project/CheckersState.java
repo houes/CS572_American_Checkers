@@ -49,18 +49,22 @@ public class CheckersState implements Cloneable {
 		XYLocation from_pos = action.getSelNode();
 		XYLocation to_pos = action.getMoveTo();
 
-		dismark(from_pos.getXCoOrdinate(), from_pos.getYCoOrdinate());
-		mark(to_pos.getXCoOrdinate(), to_pos.getYCoOrdinate());
+		// 1.dismark origin position
+		dismark(from_pos.getXCoOrdinate(), from_pos.getYCoOrdinate(), getPlayerToMove());
 
+		// 2.dismark middle position if jump
 		if (Math.abs(to_pos.getXCoOrdinate() - from_pos.getXCoOrdinate()) == 2) {
 			int midx = (from_pos.getXCoOrdinate() + to_pos.getXCoOrdinate()) / 2;
 			int midy = (from_pos.getYCoOrdinate() + to_pos.getYCoOrdinate()) / 2;
-			dismark(midx, midy);
+			String opponent = (playerToMove == X ? O : X);
+			dismark(midx, midy, opponent);
 		}
+		// 3.mark destination
+		mark(to_pos.getXCoOrdinate(), to_pos.getYCoOrdinate());
 	}
 
-	public void dismark(int col, int row) {
-		if (utility == -1 && board[getAbsPosition(col, row)] == playerToMove) {
+	public void dismark(int col, int row, String player) {
+		if (utility == -1 && board[getAbsPosition(col, row)] == player) {
 			board[getAbsPosition(col, row)] = EMPTY;
 		}
 	}
@@ -74,11 +78,37 @@ public class CheckersState implements Cloneable {
 	}
 
 	private void analyzeUtility() {
-		if (lineThroughBoard()) {
+/*		if (lineThroughBoard()) {
+			utility = (playerToMove == X ? 1 : 0);
+		} else if (getNumberOfMarkedPositions() == 64) {
+			utility = 0.5;
+		}*/
+		if (opponentHasNoPiece() || oppnentHasNoFeasibleMoves()) {
 			utility = (playerToMove == X ? 1 : 0);
 		} else if (getNumberOfMarkedPositions() == 64) {
 			utility = 0.5;
 		}
+	}
+
+	public boolean opponentHasNoPiece() {
+
+		String opponent = (playerToMove == X ? O : X);
+
+		if (getNumberOfPieces(opponent) == 0)
+			return true;
+		else
+			return false;
+
+	}
+
+	public boolean oppnentHasNoFeasibleMoves() {
+		
+		String opponent = (playerToMove == X ? O : X);
+		
+		if(getFeasiblePositions(opponent).isEmpty())
+			return true;
+		else
+			return false;		
 	}
 
 	public boolean lineThroughBoard() {
@@ -136,11 +166,12 @@ public class CheckersState implements Cloneable {
 		return retVal;
 	}
 
-	public int getNumberOfBlackPieces() {
+	public int getNumberOfPieces(String player) {
+		// "X" for red, "O" for white
 		int retVal = 0;
 		for (int col = 0; col < 8; col++) {
 			for (int row = 0; row < 8; row++) {
-				if (getValue(col, row).equals("X")) {
+				if (getValue(col, row).equals(player)) {
 					retVal++;
 				}
 			}
@@ -148,35 +179,37 @@ public class CheckersState implements Cloneable {
 		return retVal;
 	}
 
-	public boolean isForward(XYLocation origin, XYLocation destination)
-	{
-		if(getPlayerToMove().equals(X)) // red
+	public boolean isForward(XYLocation origin, XYLocation destination,String player) {
+		if (player.equals(X)) // red
 		{
-			if(destination.getYCoOrdinate() - origin.getYCoOrdinate() >0 )
-				return true;
-			else 
-				return false;
-		}
-		else if (getPlayerToMove().equals(O))// white
-		{
-			if(destination.getYCoOrdinate() - origin.getYCoOrdinate() <0 )
+			if (destination.getYCoOrdinate() - origin.getYCoOrdinate() > 0)
 				return true;
 			else
 				return false;
-		}
-		else
+		} else if (player.equals(O))// white
 		{
-			 System.out.println("Error in isForward()!");
-			 return false;
+			if (destination.getYCoOrdinate() - origin.getYCoOrdinate() < 0)
+				return true;
+			else
+				return false;
+		} else {
+			System.out.println("Error in isForward()!");
+			return false;
 		}
-			
+
+	}
+
+	public List<XYLocation> getFeasiblePositions(XYLocation selNode) {
+		
+		return getFeasiblePositions(selNode, getPlayerToMove());
 	}
 	
-	public List<XYLocation> getFeasiblePositions(XYLocation selNode) {
+	
+	public List<XYLocation> getFeasiblePositions(XYLocation selNode, String player) {
 
 		List<XYLocation> result = new ArrayList<XYLocation>();
-
-		if (getValue(selNode).equals(playerToMove)) {
+		
+		if (getValue(selNode).equals(player)) {
 			int col = selNode.getXCoOrdinate();
 			int row = selNode.getYCoOrdinate();
 			List<XYLocation> moveToPos = new ArrayList<XYLocation>();
@@ -188,12 +221,12 @@ public class CheckersState implements Cloneable {
 			for (XYLocation pos : moveToPos) {
 				if (pos.isWithinBoundary(0, 7))
 					if (getValue(pos).equals(EMPTY))
-						if(isForward(selNode, pos))
-						result.add(pos);
+						if (isForward(selNode, pos,player))
+							result.add(pos);
 			}
 			moveToPos.clear();
 			// second, check if it can jump
-			String opponent = (playerToMove == X ? O : X);
+			String opponent = (player == X ? O : X);
 			moveToPos.add(new XYLocation(col - 2, row - 2));
 			moveToPos.add(new XYLocation(col - 2, row + 2));
 			moveToPos.add(new XYLocation(col + 2, row + 2));
@@ -206,7 +239,7 @@ public class CheckersState implements Cloneable {
 						int mid_x = (col + xCoord) / 2;
 						int mid_y = (row + yCoord) / 2;
 						if (getValue(mid_x, mid_y).equals(opponent))
-							if(isForward(selNode, pos))
+							if (isForward(selNode, pos,player))
 								result.add(pos);
 					}
 			}
@@ -216,16 +249,22 @@ public class CheckersState implements Cloneable {
 	}
 
 	public List<CheckerAction> getFeasiblePositions() {
+	
+		return getFeasiblePositions(getPlayerToMove());
+	}
+	
+	public List<CheckerAction> getFeasiblePositions(String player) {
 
 		List<CheckerAction> result = new ArrayList<CheckerAction>();
 
 		for (int col = 0; col < 8; col++) {
 			for (int row = 0; row < 8; row++) {
-				XYLocation currNode = new XYLocation(col,row);
-				List<XYLocation> feasibleLocOfNode =getFeasiblePositions(currNode);
-				for(XYLocation moveToPos:feasibleLocOfNode)
-				{
-					result.add(new CheckerAction(currNode,moveToPos));
+				if (getValue(col, row).equals(player)) {
+					XYLocation currNode = new XYLocation(col, row);
+					List<XYLocation> feasibleLocOfNode = getFeasiblePositions(currNode,player);
+					for (XYLocation moveToPos : feasibleLocOfNode) {
+						result.add(new CheckerAction(currNode, moveToPos));
+					}
 				}
 			}
 		}

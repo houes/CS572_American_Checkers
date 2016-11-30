@@ -234,9 +234,9 @@ public class CheckersApp {
 			String statusText;
 			if (game.isTerminal(currState))
 				if (game.getUtility(currState, CheckersState.X) == 1)
-					statusText = "X has won :-)";
+					statusText = "Red has won :-)";   // X
 				else if (game.getUtility(currState, CheckersState.O) == 1)
-					statusText = "O has won :-)";
+					statusText = "White has won :-)"; // O
 				else
 					statusText = "No winner...";
 			else

@@ -47,13 +47,6 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 		result.mark(action);
 		return result;
 	}
-	
-	@Override
-	public CheckersState getResult(CheckersState state, CheckerAction action_select, CheckerAction action_move_to) {
-		// this function was deprecated, do not use.
-		CheckersState result = state.clone();
-		return result;
-	}
 
 	@Override
 	public boolean isTerminal(CheckersState state) {
@@ -90,13 +83,13 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 		int result;
 		
 		int markedPositions = state.getNumberOfMarkedPositions();
-		int num_black = state.getNumberOfBlackPieces();
-		int num_white = markedPositions- num_black;
+		int num_red = state.getNumberOfPieces("X");
+		int num_white = markedPositions- num_red;
 		
 		if (player == CheckersState.X)
-			result = num_black - num_white;
+			result = num_red - num_white;
 		else
-			result = num_white - num_black;
+			result = num_white - num_red;
 		
 		return result;
 	}

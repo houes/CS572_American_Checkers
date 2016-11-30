@@ -48,8 +48,6 @@ public interface Game<STATE, ACTION, PLAYER> {
 	List<ACTION> getActions(STATE state);
 
 	STATE getResult(STATE state, ACTION action);
-	
-	STATE getResult(STATE state, ACTION action_select, ACTION action_move_to);
 
 	boolean isTerminal(STATE state);
 
