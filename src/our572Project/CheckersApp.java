@@ -59,6 +59,8 @@ public class CheckersApp {
 
 		ImageIcon icon_red;
 		ImageIcon icon_white;
+		ImageIcon icon_red_king;
+		ImageIcon icon_white_king;
 		boolean select_mode = true;// if true, the current action is to select
 									// a
 									// piece, if false, the current action is to
@@ -96,12 +98,16 @@ public class CheckersApp {
 				int ICON_HEIGHT = 60;
 				Image img_red = ImageIO.read(getClass().getResource("resources/red.BMP")).getScaledInstance(ICON_WIDTH,
 						ICON_HEIGHT, java.awt.Image.SCALE_SMOOTH);
-				;
 				Image img_white = ImageIO.read(getClass().getResource("resources/white.BMP"))
 						.getScaledInstance(ICON_WIDTH, ICON_HEIGHT, java.awt.Image.SCALE_SMOOTH);
-				;
+				Image img_red_king = ImageIO.read(getClass().getResource("resources/red_king.BMP"))
+						.getScaledInstance(ICON_WIDTH, ICON_HEIGHT, java.awt.Image.SCALE_SMOOTH);
+				Image img_white_king = ImageIO.read(getClass().getResource("resources/white_king.BMP"))
+						.getScaledInstance(ICON_WIDTH, ICON_HEIGHT, java.awt.Image.SCALE_SMOOTH);
 				icon_red = new ImageIcon(img_red);
 				icon_white = new ImageIcon(img_white);
+				icon_red_king = new ImageIcon(img_red_king);
+				icon_white_king = new ImageIcon(img_white_king);
 			} catch (IOException ex) {
 			}
 			for (int i = 0; i < 64; i++) {
@@ -156,23 +162,25 @@ public class CheckersApp {
 						if (currSeletPiece.equals("EMPTY") || !currSeletPiece.equals(nextPlayer)) {
 							repick_piece = true;
 							statusBar.setText("Invalid piece, You must select a " + nextPlayerColor + " piece!");
-						} else
+						} else if(currState.getFeasiblePositions(selected_piece).isEmpty())
+						{
+							repick_piece = true;
+							statusBar.setText("Invalid "+nextPlayerColor+" piece, it cannot move, repick!");
+						}
+						else
 							statusBar.setText(nextPlayerColor + " was selected ");
 
 					} else {
 						// second click: select move to position
 						for (int i = 0; i < 64; i++)
 							if (ae.getSource() == squares[i]) {
-								XYLocation destination =new XYLocation(i % 8, i / 8);
+								XYLocation destination = new XYLocation(i % 8, i / 8);
 								CheckerAction cAction = new CheckerAction(selected_piece, destination);
-								
-								if(currState.getFeasiblePositions(selected_piece).contains(destination))
-								{
+
+								if (currState.getFeasiblePositions(selected_piece).contains(destination)) {
 									currState = game.getResult(currState, cAction);
-								}
-								else
-								{
-									repick_piece=true;
+								} else {
+									repick_piece = true;
 									statusBar.setText("Invalid position, You must select a feasible destination!");
 								}
 								break;
@@ -184,14 +192,21 @@ public class CheckersApp {
 			if (ae == null || ae.getSource() == clearButton || isProposedMove || !select_mode) {
 				for (int i = 0; i < 64; i++) {
 					String val = currState.getValue(i % 8, i / 8);
+					String king_val = currState.getKingValue(i % 8, i / 8);
 					if (val == CheckersState.EMPTY)
 						val = "";
 
-					if (val.equals("X"))
-						squares[i].setIcon(icon_red);
-					else if (val.equals("O"))
-						squares[i].setIcon(icon_white);
-					else
+					if (val.equals("X")) {
+						if (king_val.equals("K"))
+							squares[i].setIcon(icon_red_king);
+						else
+							squares[i].setIcon(icon_red);
+					} else if (val.equals("O")) {
+						if (king_val.equals("K"))
+							squares[i].setIcon(icon_white_king);
+						else
+							squares[i].setIcon(icon_white);
+					} else
 						squares[i].setIcon(null);
 				}
 
@@ -201,7 +216,7 @@ public class CheckersApp {
 
 			if (ae != null && !isProposedMove && !repick_piece)
 				select_mode = !select_mode;
-			
+
 			if (ae != null && ae.getSource() == clearButton)
 				select_mode = true;
 		}
@@ -227,6 +242,7 @@ public class CheckersApp {
 			action = search.makeDecision(currState);
 			searchMetrics = search.getMetrics();
 			currState = game.getResult(currState, action);
+			int a=1;
 		}
 
 		/** Updates the status bar. */
@@ -234,7 +250,7 @@ public class CheckersApp {
 			String statusText;
 			if (game.isTerminal(currState))
 				if (game.getUtility(currState, CheckersState.X) == 1)
-					statusText = "Red has won :-)";   // X
+					statusText = "Red has won :-)"; // X
 				else if (game.getUtility(currState, CheckersState.O) == 1)
 					statusText = "White has won :-)"; // O
 				else
