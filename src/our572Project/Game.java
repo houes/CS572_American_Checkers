@@ -55,7 +55,5 @@ public interface Game<STATE, ACTION, PLAYER> {
 	
 	int getEvaluation(STATE state, PLAYER player, int num);
 	
-	int getPatternVal(STATE state,PLAYER player, int num);
-	
 	double getUtility(STATE state, PLAYER player);
 }
