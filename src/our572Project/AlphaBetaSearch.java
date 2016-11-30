@@ -64,13 +64,14 @@ public class AlphaBetaSearch<STATE, ACTION, PLAYER> implements
 
 	@Override
 	public ACTION makeDecision(STATE state) {
+		int depth=1;
 		metrics = new Metrics();
 		ACTION result = null;
 		double resultValue = Double.NEGATIVE_INFINITY;
 		PLAYER player = game.getPlayer(state);
 		for (ACTION action : game.getActions(state)) {
 			double value = minValue(game.getResult(state, action), player,
-					Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
+					Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY,depth);
 			if (value > resultValue) {
 				result = action;
 				resultValue = value;
@@ -79,20 +80,21 @@ public class AlphaBetaSearch<STATE, ACTION, PLAYER> implements
 		return result;
 	}
 
-	public double maxValue(STATE state, PLAYER player, double alpha, double beta) {
+	public double maxValue(STATE state, PLAYER player, double alpha, double beta,int depth) {
 		metrics.incrementInt(METRICS_NODES_EXPANDED);
-		
-		if(game.needsCutOff(state))
-			return game.getEvaluation(state, player, 0);
-		else if (game.isTerminal(state))
-			return game.getUtility(state, player);
+		if(depth<=1){
+			if(game.needsCutOff(state))
+				return game.getEvaluation(state, player, 0);
+			else if (game.isTerminal(state))
+				return game.getUtility(state, player);
+		}
 		
 		if (game.isTerminal(state))
 			return game.getUtility(state, player);
 		double value = Double.NEGATIVE_INFINITY;
 		for (ACTION action : game.getActions(state)) {
 			value = Math.max(value, minValue( //
-					game.getResult(state, action), player, alpha, beta));
+					game.getResult(state, action), player, alpha, beta,depth-1));
 			if (value >= beta)
 				return value;
 			alpha = Math.max(alpha, value);
@@ -100,20 +102,22 @@ public class AlphaBetaSearch<STATE, ACTION, PLAYER> implements
 		return value;
 	}
 
-	public double minValue(STATE state, PLAYER player, double alpha, double beta) {
+	public double minValue(STATE state, PLAYER player, double alpha, double beta,int depth) {
 		metrics.incrementInt(METRICS_NODES_EXPANDED);
 		
-		if(game.needsCutOff(state))
-			return game.getEvaluation(state, player, 0);
-		else if (game.isTerminal(state))
-			return game.getUtility(state, player);
+		if(depth<=1){
+			if(game.needsCutOff(state))
+				return game.getEvaluation(state, player, 0);
+			else if (game.isTerminal(state))
+				return game.getUtility(state, player);
+		}
 		
 		if (game.isTerminal(state))
 			return game.getUtility(state, player);
 		double value = Double.POSITIVE_INFINITY;
 		for (ACTION action : game.getActions(state)) {
 			value = Math.min(value, maxValue( //
-					game.getResult(state, action), player, alpha, beta));
+					game.getResult(state, action), player, alpha, beta,depth-1));
 			if (value <= alpha)
 				return value;
 			beta = Math.min(beta, value);
