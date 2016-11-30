@@ -209,6 +209,19 @@ public class CheckersState implements Cloneable {
 		}
 		return retVal;
 	}
+	
+	public int getNumberOfKings(String player)
+	{
+		int retVal = 0;
+		for (int col = 0; col < 8; col++) {
+			for (int row = 0; row < 8; row++) {
+				if (getKingValue(col, row).equals(player)) {
+					retVal++;
+				}
+			}
+		}
+		return retVal;
+	}
 
 	public boolean isForward(XYLocation origin, XYLocation destination, String player) {
 		if (player.equals(X)) // red

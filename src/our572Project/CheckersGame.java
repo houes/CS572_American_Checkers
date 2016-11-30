@@ -135,33 +135,7 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 		int i, j;	//i for row and j for column
 		
 		//Count all positions that have weight 4
-		//The score for row 0 
-		for (i = 0, j = 1; j < 8; j += 2)
-		{
-			if (state.getValue(j, i) == player)
-				nPosFour++;
-		}
-		
-		//The score for row 7
-		for (i = 7, j = 0; j < 8; j += 2)
-		{
-			if (state.getValue(j, i) == player)
-				nPosFour++;
-		}
-		
-		//The score for column 0
-		for (i = 1, j = 0; i < 6; i += 2)
-		{
-			if (state.getValue(j, i) == player)
-				nPosFour++;
-		}
-		
-		//The score for column 7
-		for (i = 2, j = 7; i < 8; i += 2)
-		{
-			if (state.getValue(j, i) == player)
-				nPosFour++;
-		}
+		nPosFour = getSafePieces(state, player);
 		
 		//Count all positions that have weight 3
 		//The score for row 1
@@ -225,8 +199,123 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 	public int getSimpleFeature(CheckersState state, String player)
 	{
 		int score = 0;
+		int nPawns = getPawns(state, player);
+		int nKings = getKings(state, player);
+		int nSafePawns = getSafePawns(state, player);
 		
 		return score;
+	}
+	
+	//Feature 1
+	public int getPawns(CheckersState state, String player)
+	{
+		int nPawns = state.getNumberOfPieces(player) - state.getNumberOfKings(player);
+		
+		return nPawns;
+	}
+	
+	//Feature 2
+	public int getKings(CheckersState state, String player)
+	{	
+		return state.getNumberOfKings(player);
+	}
+	
+	//Feature 3
+	public int getSafePawns(CheckersState state, String player)
+	{
+		int nSafePieces = getSafePieces(state, player);
+		int nSafeKings = getSafeKings(state, player);
+		
+		return (nSafePieces - nSafeKings);
+	}
+	
+	public int getSafePieces(CheckersState state, String player)
+	{
+		int nSafePieces = 0;
+		int i, j;
+		
+		//The safe piece number in row 0 
+		for (i = 0, j = 1; j < 8; j += 2)
+		{
+			if (state.getValue(j, i) == player)
+				nSafePieces++;
+		}
+				
+		//The safe piece number in row 7
+		for (i = 7, j = 0; j < 8; j += 2)
+		{
+			if (state.getValue(j, i) == player)
+				nSafePieces++;
+		}
+				
+		//The safe piece number in column 0
+		for (i = 1, j = 0; i < 6; i += 2)
+		{
+			if (state.getValue(j, i) == player)
+				nSafePieces++;
+		}
+				
+		//The safe piece number in for column 7
+		for (i = 2, j = 7; i < 8; i += 2)
+		{
+			if (state.getValue(j, i) == player)
+				nSafePieces++;
+		}
+		
+		return nSafePieces;
+	}
+	
+	//Feature 4
+	public int getSafeKings(CheckersState state, String player)
+	{
+		int nSafeKings = 0;
+		int i, j;
+		
+		//The safe king number in row 0 
+		for (i = 0, j = 1; j < 8; j += 2)
+		{
+			if (state.getKingValue(j, i) == player)
+				nSafeKings++;
+		}
+				
+		//The safe king number in row 7
+		for (i = 7, j = 0; j < 8; j += 2)
+		{
+			if (state.getKingValue(j, i) == player)
+				nSafeKings++;
+		}
+				
+		//The safe king number in column 0
+		for (i = 1, j = 0; i < 6; i += 2)
+		{
+			if (state.getKingValue(j, i) == player)
+				nSafeKings++;
+		}
+				
+		//The safe king number in for column 7
+		for (i = 2, j = 7; i < 8; i += 2)
+		{
+			if (state.getKingValue(j, i) == player)
+				nSafeKings++;
+		}
+		
+		return nSafeKings;
+	}
+	
+	//Feature 5
+	public int getMoveablePawns(CheckersState state, String player)
+	{
+		int nMoveablePawns = 0;
+		
+		return nMoveablePawns;
+	}
+	
+	//Feature 6
+	public int getMoveableKings(CheckersState state, String player)
+	{
+		int nMoveablePawns = 0;
+		
+		return nMoveablePawns;
 	}
 	
 	public int getLayoutFeature(CheckersState state, String player)
