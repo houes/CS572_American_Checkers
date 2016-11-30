@@ -128,8 +128,96 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 	public int evalFunc1(CheckersState state, String player)
 	{
 		int res = 0;
+		int nPosFour = 0;  //Chessboard positions that has weight 4
+		int nPosThree = 0;
+		int nPosTwo = 0;
+		int nPosOne = 0;
+		int i, j;	//i for row and j for column
 		
+		//Count all positions that have weight 4
+		//The score for row 0 
+		for (i = 0, j = 1; j < 8; j += 2)
+		{
+			if (state.getValue(j, i) == player)
+				nPosFour++;
+		}
 		
+		//The score for row 7
+		for (i = 7, j = 0; j < 8; j += 2)
+		{
+			if (state.getValue(j, i) == player)
+				nPosFour++;
+		}
+		
+		//The score for column 0
+		for (i = 1, j = 0; i < 6; i += 2)
+		{
+			if (state.getValue(j, i) == player)
+				nPosFour++;
+		}
+		
+		//The score for column 7
+		for (i = 2, j = 7; i < 8; i += 2)
+		{
+			if (state.getValue(j, i) == player)
+				nPosFour++;
+		}
+		
+		//Count all positions that have weight 3
+		//The score for row 1
+		for (i = 1, j = 2; j < 8; j += 2)
+		{
+			if (state.getValue(j, i) == player)
+				nPosThree++;
+		}
+		
+		//The score for row 6
+		for (i = 6, j = 1; j < 6; j += 2)
+		{
+			if (state.getValue(j, i) == player)
+				nPosThree++;
+		}
+		
+		//The score for column 1
+		if (state.getValue(1, 2) == player)
+			nPosThree++;
+		if (state.getValue(1, 4) == player)
+			nPosThree++;
+		
+		//The score for column 6
+		if (state.getValue(6, 3) == player)
+			nPosThree++;
+		if (state.getValue(6, 5) == player)
+			nPosThree++;
+		
+		//Count all positions that have weight 2
+		//The score for row 2 
+		if (state.getValue(3, 2) == player)
+			nPosTwo++;
+		if (state.getValue(5, 2) == player)
+			nPosTwo++;
+		
+		//The score for row 5
+		if (state.getValue(2, 5) == player)
+			nPosTwo++;
+		if (state.getValue(4, 5) == player)
+			nPosTwo++;
+		
+		//The score for column 2
+		if (state.getValue(2, 3) == player)
+			nPosTwo++;
+		
+		//The score for column 5
+		if (state.getValue(5, 4) == player)
+			nPosTwo++;
+		
+		////Count all positions that have weight 1
+		if (state.getValue(4, 3) == player)
+			nPosOne++;
+		if (state.getValue(3, 4) == player)
+			nPosOne++;
+		
+		res = nPosFour * 4 + nPosThree * 3 + nPosTwo * 2 + nPosOne;
 		
 		return res;
 	}
