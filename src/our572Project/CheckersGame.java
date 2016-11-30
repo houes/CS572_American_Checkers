@@ -109,6 +109,44 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 		return result;
 	}
 	
+	@Override
+	public int getPatternVal(CheckersState state, String player, int num){
+		int value=0;
+		if(player.equals('O')){			
+		   if(state.getValue(5, 6)==player&&state.getValue(4, 7)==player&&state.getValue(6, 7)==player)
+			value+=2;
+		
+		   if(state.getValue(3, 6)==player&&state.getValue(2, 7)==player&&state.getValue(4, 7)==player)
+			value+=3;	
+		   
+		   if(state.getValue(2, 7)==player&&state.getValue(6, 7)==player)
+			   value+=2;
+		   
+		   if(state.getValue(0, 7)==player)
+			   value+=2;
+		   
+		   if(state.getValue(7, 0)==player&&state.getKingValue(7, 0)==player)
+			   value+=3;
+		}
+		else{
+			if(state.getValue(2, 1)==player&&state.getValue(1, 0)==player&&state.getValue(3, 0)==player)
+				value+=2;
+			
+		    if(state.getValue(4, 1)==player&&state.getValue(3, 0)==player&&state.getValue(5, 0)==player)
+				value+=3;
+			
+		    if(state.getValue(1, 0)==player&&state.getValue(5, 0)==player)
+				   value+=2;  
+		    
+		    if(state.getValue(7, 0)==player)
+				   value+=2;
+		    
+		    if(state.getValue(0, 7)==player&&state.getKingValue(0, 7)==player)
+				   value+=3;
+		}
+		return value;
+	}
+	
 	public int evalFunc0(CheckersState state, String player)
 	{
 		int res = 0;
