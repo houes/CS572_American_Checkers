@@ -81,9 +81,7 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 	public int getEvaluation(CheckersState state, String player, int num)
 	{
 		if (num < 0 || num > 4)
-		{
-			return -1;
-		}
+			throw new IllegalArgumentException("Evaluation function version out of bound (0-3)");
 		
 		int result = 0;
 		
@@ -113,9 +111,8 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 	{
 		int res = 0;
 		
-		int markedPositions = state.getNumberOfMarkedPositions();
 		int num_red = state.getNumberOfPieces("X");
-		int num_white = markedPositions - num_red;
+		int num_white = state.getNumberOfPieces("O");
 		
 		if (player == CheckersState.X)
 			res = num_red - num_white;
