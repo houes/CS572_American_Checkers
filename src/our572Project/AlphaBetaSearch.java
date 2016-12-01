@@ -64,14 +64,14 @@ public class AlphaBetaSearch<STATE, ACTION, PLAYER> implements
 
 	@Override
 	public ACTION makeDecision(STATE state) {
-		int depth=1;
+		int MaxSearchDepth=10;
 		metrics = new Metrics();
 		ACTION result = null;
 		double resultValue = Double.NEGATIVE_INFINITY;
 		PLAYER player = game.getPlayer(state);
 		for (ACTION action : game.getActions(state)) {
 			double value = minValue(game.getResult(state, action), player,
-					Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY,depth);
+					Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY,MaxSearchDepth);
 			if (value > resultValue) {
 				result = action;
 				resultValue = value;
@@ -82,12 +82,12 @@ public class AlphaBetaSearch<STATE, ACTION, PLAYER> implements
 
 	public double maxValue(STATE state, PLAYER player, double alpha, double beta,int depth) {
 		metrics.incrementInt(METRICS_NODES_EXPANDED);
-		if(depth<=1){
-			if(game.needsCutOff(state))
+
+			if(depth<=1)
 				return game.getEvaluation(state, player, 0);
 			else if (game.isTerminal(state))
 				return game.getUtility(state, player);
-		}
+
 		
 		if (game.isTerminal(state))
 			return game.getUtility(state, player);
@@ -105,12 +105,10 @@ public class AlphaBetaSearch<STATE, ACTION, PLAYER> implements
 	public double minValue(STATE state, PLAYER player, double alpha, double beta,int depth) {
 		metrics.incrementInt(METRICS_NODES_EXPANDED);
 		
-		if(depth<=1){
-			if(game.needsCutOff(state))
+			if(depth<=1)
 				return game.getEvaluation(state, player, 0);
 			else if (game.isTerminal(state))
 				return game.getUtility(state, player);
-		}
 		
 		if (game.isTerminal(state))
 			return game.getUtility(state, player);

@@ -73,6 +73,20 @@ public class CheckersState implements Cloneable {
 		else
 			return false;
 	}
+	
+	public boolean isPlayerAndKing(XYLocation pos, String player) {
+
+		if(getValue(pos).equals(player) && isKing(pos))
+			return true;
+		else
+			return false;
+	}
+	
+	public boolean isPlayerAndKing(int col, int row, String player) {
+		
+		XYLocation pos = new XYLocation(col,row);	
+		return isPlayerAndKing(pos,player);
+	}
 
 	public double getUtility() {
 		return utility;
@@ -215,7 +229,7 @@ public class CheckersState implements Cloneable {
 		int retVal = 0;
 		for (int col = 0; col < 8; col++) {
 			for (int row = 0; row < 8; row++) {
-				if (getKingValue(col, row).equals(player)) {
+				if (isPlayerAndKing(col,row,player)) {
 					retVal++;
 				}
 			}
