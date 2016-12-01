@@ -274,28 +274,28 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 		//The safe king number in row 0 
 		for (i = 0, j = 1; j < 8; j += 2)
 		{
-			if (state.getKingValue(j, i) == player)
+			if (state.isPlayerAndKing(j, i, player) == true)
 				nSafeKings++;
 		}
 				
 		//The safe king number in row 7
 		for (i = 7, j = 0; j < 8; j += 2)
 		{
-			if (state.getKingValue(j, i) == player)
+			if (state.isPlayerAndKing(j, i, player) == true)
 				nSafeKings++;
 		}
 				
 		//The safe king number in column 0
 		for (i = 1, j = 0; i < 6; i += 2)
 		{
-			if (state.getKingValue(j, i) == player)
+			if (state.isPlayerAndKing(j, i, player) == true)
 				nSafeKings++;
 		}
 				
 		//The safe king number in for column 7
 		for (i = 2, j = 7; i < 8; i += 2)
 		{
-			if (state.getKingValue(j, i) == player)
+			if (state.isPlayerAndKing(j, i, player) == true)
 				nSafeKings++;
 		}
 		
