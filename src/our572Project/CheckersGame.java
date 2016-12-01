@@ -274,28 +274,28 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 		//The safe king number in row 0 
 		for (i = 0, j = 1; j < 8; j += 2)
 		{
-			if (state.isPlayerAndKing(j, i, player) == true)
+			if (state.getKingValue(j, i) == player)
 				nSafeKings++;
 		}
 				
 		//The safe king number in row 7
 		for (i = 7, j = 0; j < 8; j += 2)
 		{
-			if (state.isPlayerAndKing(j, i, player) == true)
+			if (state.getKingValue(j, i) == player)
 				nSafeKings++;
 		}
 				
 		//The safe king number in column 0
 		for (i = 1, j = 0; i < 6; i += 2)
 		{
-			if (state.isPlayerAndKing(j, i, player) == true)
+			if (state.getKingValue(j, i) == player)
 				nSafeKings++;
 		}
 				
 		//The safe king number in for column 7
 		for (i = 2, j = 7; i < 8; i += 2)
 		{
-			if (state.isPlayerAndKing(j, i, player) == true)
+			if (state.getKingValue(j, i) == player)
 				nSafeKings++;
 		}
 		
@@ -324,6 +324,77 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 		
 		return score;
 	}
+	
+	//Layout feature 1:get number of defender pieces, pawn=1 king=2
+	public int getDefenders(CheckersState state, String player){
+		int score=0;
+		
+		for(int i=1;i<8;i+=2){
+			if(state.getValue(i, 0).equals(player))
+				score++;
+			if(state.isPlayerAndKing(i, 0, player))
+				score++;
+		}
+		
+		for(int i=0;i<8;i+=2){
+			if(state.getValue(i, 7).equals(player))
+				score++;
+			if(state.isPlayerAndKing(i, 7, player))
+				score++;
+		}
+		
+		return score;
+	}
+	
+	//layout feature 2: get number of attacking pieces, pawn=1, king=2
+	public int getAttackers(CheckersState state, String player){
+		int score=0;
+		
+		
+		return score;
+	}
+	
+	//layout feature 3: get number of pieces in the central part, pawn=1, king=2
+	public int getCentralPawnAndKing(CheckersState state, String player){
+		int score=0;
+		
+		
+		return score;
+	}
+	
+	//layout feature 4: get number of pieces at the main diagonal line, pawn=1, king=2
+	public int getMainDiagPawnsAndKings(CheckersState state, String player){
+		int num=0;
+		for(int i=0,j=7;i<8;i++,j--){
+			if(state.getValue(i, j).equals(player))
+				num++;
+			if(state.isPlayerAndKing(i, j, player))
+				num++;
+		}
+		return num;
+	}
+	
+	//layout feature 2: get number of pieces at the double diagonal lines, pawn=1, king=2
+	public int getDoubleDiagPawmAndKing(CheckersState state, String player){
+		int num=0;
+		for(int i=1,j=0;i<8;i++,j++){
+			if(state.getValue(i, j).equals(player))
+				num++;
+			if(state.isPlayerAndKing(i, j, player))
+				num++;
+		}
+		
+		for(int i=0,j=1;i<7;i++,j++){
+			if(state.getValue(i, j).equals(player))
+				num++;
+			if(state.isPlayerAndKing(i, j, player))
+				num++;
+		}
+		
+		return num;
+	}
+	
+	
 	
 	public int getPatternFeature(CheckersState state, String player)
 	{    
