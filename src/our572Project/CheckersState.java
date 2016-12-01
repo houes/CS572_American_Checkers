@@ -40,6 +40,8 @@ public class CheckersState implements Cloneable {
 	}
 
 	public String getValue(int col, int row) {
+		if(col<0||col>7||row<0||row>7)
+			return EMPTY;
 		return board[getAbsPosition(col, row)];
 	}
 
