@@ -429,10 +429,35 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 	
 	//Feature 11 & 12 - Layout feature 3: get number of pieces in the central part, pawn=1, king=2
 	public int getCentralPawnAndKing(CheckersState state, String player){
-		int score=0;
+		int num=0;
+		for(int i=2,j=5;i<6;i++,j--){
+			if(state.getValue(i, j).equals(player))
+				num++;
+			if(state.isPlayerAndKing(i, j, player))
+				num++;
+		}
 		
+		if(state.getValue(2, 3).equals(player))
+			num++;
+		if(state.isPlayerAndKing(2, 3, player))
+			num++;
 		
-		return score;
+		if(state.getValue(3, 2).equals(player))
+			num++;
+		if(state.isPlayerAndKing(3, 2, player))
+			num++;
+		
+		if(state.getValue(4, 5).equals(player))
+			num++;
+		if(state.isPlayerAndKing(4, 5, player))
+			num++;
+		
+		if(state.getValue(5, 4).equals(player))
+			num++;
+		if(state.isPlayerAndKing(5, 4, player))
+			num++;
+		
+		return num;
 	}
 	
 	//Feature 13 & 14 - Layout feature 4: get number of pieces at the main diagonal line, pawn=1, king=2
@@ -467,7 +492,29 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 		return num;
 	}
 	
-	
+	//Feature 17 & 18 - layout feature 6: get number of loner pieces, pawn=1, king=2
+	public int getLonerPawnAndKing(CheckersState state, String player){
+		int num=0;
+		for(int i=0;i<=7;i++){
+			for(int j=0;j<=7;j++){
+				if(state.getValue(i, j).equals(player)){
+					if(state.getValue(i-1, j-1).equals('-')&&state.getValue(i-1, j+1).equals('-')&&state.getValue(i+1, j+1).equals('-')&&state.getValue(i+1, j-1).equals('-')){
+						num++;
+						if(state.isPlayerAndKing(i, j, player))
+							num++;
+					}
+				}
+			}
+		}
+		return num;
+	}
+
+	//Feature 19 - layout feature 7: get number of holes
+	public int getHoles(CheckersState state, String player){
+		int num=0;
+		
+		return num;
+	}
 	
 	public int getPatternFeature(CheckersState state, String player)
 	{    
