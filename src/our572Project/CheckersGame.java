@@ -340,11 +340,11 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 	public int getPattern1(CheckersState state, String player){
 		int score=0;
 		if(player.equals('O')){			
-			   if(state.getValue(5, 6)==player&&state.getValue(4, 7)==player&&state.getValue(6, 7)==player)
-				   score= 1;
+		    if(state.getValue(5, 6).equals(player)&&state.getValue(4, 7).equals(player)&&state.getValue(6, 7).equals(player))
+			score= 1;
 		}
 	   if(player.equals('X')){
-			if(state.getValue(2, 1)==player&&state.getValue(1, 0)==player&&state.getValue(3, 0)==player)
+			if(state.getValue(2, 1).equals(player)&&state.getValue(1, 0).equals(player)&&state.getValue(3, 0).equals(player))
 				score= 1;
 		}
 	   return score;
@@ -354,11 +354,11 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 	public int getPattern2(CheckersState state, String player){
 		int score=0;
 		if(player.equals('O'))	
-			if(state.getValue(3, 6)==player&&state.getValue(2, 7)==player&&state.getValue(4, 7)==player)
+			if(state.getValue(3, 6).equals(player)&&state.getValue(2, 7).equals(player)&&state.getValue(4, 7).equals(player))
 				   score=1;
 		
 		if(player.equals('X'))
-			if(state.getValue(4, 1)==player&&state.getValue(3, 0)==player&&state.getValue(5, 0)==player)
+			if(state.getValue(4, 1).equals(player)&&state.getValue(3, 0).equals(player)&&state.getValue(5, 0).equals(player))
 		    	score=1;
 			
 		return score;
@@ -368,11 +368,11 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 	public int getPattern3(CheckersState state, String player){
 		int score=0;
 		if(player.equals('O'))
-			if(state.getValue(2, 7)==player&&state.getValue(6, 7)==player)
+			if(state.getValue(2, 7).equals(player)&&state.getValue(6, 7).equals(player))
 				   score=1;
 		
 		if(player.equals('X'))
-			 if(state.getValue(1, 0)==player&&state.getValue(5, 0)==player)
+			 if(state.getValue(1, 0).equals(player)&&state.getValue(5, 0).equals( player))
 			    	score=1; 
 	
 		return score;
@@ -382,11 +382,11 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 	public int getPattern4(CheckersState state, String player){
 		int score=0;
 		if(player.equals('O'))
-			if(state.getValue(0, 7)==player)
+			if(state.getValue(0, 7).equals(player))
 				   score=1;
 		
 		if(player.equals('X'))
-			if(state.getValue(7, 0)==player)
+			if(state.getValue(7, 0).equals(player))
 		    	score=1;
 					
 		return score;
@@ -396,11 +396,11 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 	public int getPattern5(CheckersState state, String player){
 		int score=0;
 		if(player.equals('O'))
-			if(state.getValue(7, 0)==player&&state.getKingValue(7, 0)==player)
+			if(state.isPlayerAndKing(7, 0, player))
 				   score=1;
 
 		if(player.equals('X'))
-			if(state.getValue(0, 7)==player&&state.getKingValue(0, 7)==player)
+			if(state.isPlayerAndKing(0,7,player))
 		    	score+=3;
 			
 		return score;
