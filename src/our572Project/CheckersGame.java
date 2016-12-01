@@ -307,16 +307,89 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 	{
 		int nMoveablePawns = 0;
 		
+		List<CheckerAction> list = state.getFeasibleMoves(player);
+		
+		for (int i = 0; i < list.size(); i++)
+		{
+			CheckerAction action = list.get(i);
+			if (state.isPlayerAndKing(action.getSelNode(), player) == true)
+				continue;
+			else if (state.getValue(action.getSelNode()).equals(player))
+				nMoveablePawns++;
+		}
+		
 		return nMoveablePawns;
 	}
 	
 	//Feature 6
 	public int getMoveableKings(CheckersState state, String player)
 	{
-		int nMoveablePawns = 0;
+		int nMoveableKings = 0;
 		
-		return nMoveablePawns;
+		List<CheckerAction> list = state.getFeasibleMoves(player);
+		
+		for (int i = 0; i < list.size(); i++)
+		{
+			CheckerAction action = list.get(i);
+			if (state.isPlayerAndKing(action.getSelNode(), player) == true)
+				nMoveableKings++;
+		}
+		
+		return nMoveableKings;
 	}
+	
+	//Feature 7
+	public int getProDistance(CheckersState state, String player)
+	{
+		int distance = 0;
+		
+		if (player == CheckersState.X)	//Red starts on the top
+		{
+			for (int i = 0; i < 8; i++)
+				for (int j = 0; j < 8; j++)
+				{
+					if (state.getValue(j, i).equals(CheckersState.X))
+						distance += (7 - i);
+				}
+		}
+		else	//White starts on the bottom
+		{
+			for (int i = 0; i < 8; i++)
+				for (int j = 0; j < 8; j++)
+				{
+					if (state.getValue(j, i).equals(CheckersState.X))
+						distance += i;
+				}
+		}
+			
+		return distance;
+	}
+	
+	//Feature 8
+	public int getUnoccupied(CheckersState state, String player)
+	{
+		int nUnoccupied = 0;
+		
+		if (player == CheckersState.X)
+		{
+			for (int i = 0, j = 1; j < 8; j += 2)
+			{
+				if (state.isEmpty(j, i))
+					nUnoccupied++;
+			}
+		}
+		else
+		{
+			for (int i = 7, j = 0; j < 8; j += 2)
+			{
+				if (state.isEmpty(j, i))
+					nUnoccupied++;
+			}
+		}
+		
+		return nUnoccupied;
+	}
+	
 	
 	public int getLayoutFeature(CheckersState state, String player)
 	{
@@ -410,11 +483,11 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 	//pattern1: A Triangle - white pawns on squares 27, 31 and 32 or red pawns on squares 6,1,2
 	public int getPattern1(CheckersState state, String player){
 		int score=0;
-		if(player.equals('O')){			
+		if(player.equals("O")){			
 		    if(state.getValue(5, 6).equals(player)&&state.getValue(4, 7).equals(player)&&state.getValue(6, 7).equals(player))
 			score= 1;
 		}
-	   if(player.equals('X')){
+	   if(player.equals("X")){
 			if(state.getValue(2, 1).equals(player)&&state.getValue(1, 0).equals(player)&&state.getValue(3, 0).equals(player))
 				score= 1;
 		}
@@ -424,11 +497,11 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 	//Pattern2: An Oreo - white pawns on squares 26, 30 and 31 or red pawns on squares 7,2,3
 	public int getPattern2(CheckersState state, String player){
 		int score=0;
-		if(player.equals('O'))	
+		if(player.equals("O"))	
 			if(state.getValue(3, 6).equals(player)&&state.getValue(2, 7).equals(player)&&state.getValue(4, 7).equals(player))
 				   score=1;
 		
-		if(player.equals('X'))
+		if(player.equals("X"))
 			if(state.getValue(4, 1).equals(player)&&state.getValue(3, 0).equals(player)&&state.getValue(5, 0).equals(player))
 		    	score=1;
 			
@@ -438,11 +511,11 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 	//Pattern3: A Bridge - white pawns on squares 30 and 32 or red pawns on squares 1,3
 	public int getPattern3(CheckersState state, String player){
 		int score=0;
-		if(player.equals('O'))
+		if(player.equals("O"))
 			if(state.getValue(2, 7).equals(player)&&state.getValue(6, 7).equals(player))
 				   score=1;
 		
-		if(player.equals('X'))
+		if(player.equals("X"))
 			 if(state.getValue(1, 0).equals(player)&&state.getValue(5, 0).equals( player))
 			    	score=1; 
 	
@@ -452,11 +525,11 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 	//Pattern4: A Pawn in the Corner - white pawn on square 29 or red pawn on square 4
 	public int getPattern4(CheckersState state, String player){
 		int score=0;
-		if(player.equals('O'))
+		if(player.equals("O"))
 			if(state.getValue(0, 7).equals(player))
 				   score=1;
 		
-		if(player.equals('X'))
+		if(player.equals("X"))
 			if(state.getValue(7, 0).equals(player))
 		    	score=1;
 					
@@ -466,11 +539,11 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 	//Pattern5: A King in the Corner - white king on square 4 or red king on square 29
 	public int getPattern5(CheckersState state, String player){
 		int score=0;
-		if(player.equals('O'))
+		if(player.equals("O"))
 			if(state.isPlayerAndKing(7, 0, player))
 				   score=1;
 
-		if(player.equals('X'))
+		if(player.equals("X"))
 			if(state.isPlayerAndKing(0,7,player))
 		    	score+=3;
 			
