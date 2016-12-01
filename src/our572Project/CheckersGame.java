@@ -394,7 +394,14 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 	public int getLayoutFeature(CheckersState state, String player)
 	{
 		int score = 0;
-		
+		//we should give different weights for these features
+		score=getDefenders(state,player)
+				+getAttackers(state,player)
+				+getCentralPawnAndKing(state,player)
+				+getMainDiagPawnsAndKings(state,player)
+				+getDoubleDiagPawmAndKing(state,player)
+				+getLonerPawnAndKing(state,player)
+				+getHoles(state,player);
 		return score;
 	}
 	
@@ -421,10 +428,16 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 	
 	//Feature 10 - Layout feature 2: get number of attacking pieces, pawn=1, king=2
 	public int getAttackers(CheckersState state, String player){
-		int score=0;
+		int num=0;
+		for(int i=1;i<7;i++)
+			for(int j=0;j<=7;j++){
+				if(state.getValue(j, i).equals(player))
+					num++;
+				if(state.isPlayerAndKing(j, i, player))
+					num++;					
+			}
 		
-		
-		return score;
+		return num;
 	}
 	
 	//Feature 11 & 12 - Layout feature 3: get number of pieces in the central part, pawn=1, king=2
