@@ -64,7 +64,7 @@ public class AlphaBetaSearch<STATE, ACTION, PLAYER> implements
 
 	@Override
 	public ACTION makeDecision(STATE state) {
-		int MaxSearchDepth=10;
+		int MaxSearchDepth=6;
 		metrics = new Metrics();
 		ACTION result = null;
 		double resultValue = Double.NEGATIVE_INFINITY;

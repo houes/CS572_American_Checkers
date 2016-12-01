@@ -41,7 +41,7 @@ public class CheckersState implements Cloneable {
 
 	public String getValue(int col, int row) {
 		if(col<0||col>7||row<0||row>7)
-			return EMPTY;
+			 throw new IllegalArgumentException("Error in getValue(): Board position out of boundary (0-7) !");
 		return board[getAbsPosition(col, row)];
 	}
 
@@ -253,8 +253,7 @@ public class CheckersState implements Cloneable {
 			else
 				return false;
 		} else {
-			System.out.println("Error in isForward()!");
-			return false;
+			throw new IllegalArgumentException("Error in isForward(): Not valid player!");
 		}
 
 	}
