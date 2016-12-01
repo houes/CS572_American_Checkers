@@ -398,7 +398,7 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 		return score;
 	}
 	
-	//Layout feature 1:get number of defender pieces, pawn=1 king=2
+	//Feature 9 - Layout feature 1:get number of defender pieces, pawn=1 king=2
 	public int getDefenders(CheckersState state, String player){
 		int score=0;
 		
@@ -419,7 +419,7 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 		return score;
 	}
 	
-	//layout feature 2: get number of attacking pieces, pawn=1, king=2
+	//Feature 10 - Layout feature 2: get number of attacking pieces, pawn=1, king=2
 	public int getAttackers(CheckersState state, String player){
 		int score=0;
 		
@@ -427,7 +427,7 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 		return score;
 	}
 	
-	//layout feature 3: get number of pieces in the central part, pawn=1, king=2
+	//Feature 11 & 12 - Layout feature 3: get number of pieces in the central part, pawn=1, king=2
 	public int getCentralPawnAndKing(CheckersState state, String player){
 		int score=0;
 		
@@ -435,7 +435,7 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 		return score;
 	}
 	
-	//layout feature 4: get number of pieces at the main diagonal line, pawn=1, king=2
+	//Feature 13 & 14 - Layout feature 4: get number of pieces at the main diagonal line, pawn=1, king=2
 	public int getMainDiagPawnsAndKings(CheckersState state, String player){
 		int num=0;
 		for(int i=0,j=7;i<8;i++,j--){
@@ -447,7 +447,7 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 		return num;
 	}
 	
-	//layout feature 2: get number of pieces at the double diagonal lines, pawn=1, king=2
+	//Feature 15 & 16 - layout feature 5: get number of pieces at the double diagonal lines, pawn=1, king=2
 	public int getDoubleDiagPawmAndKing(CheckersState state, String player){
 		int num=0;
 		for(int i=1,j=0;i<8;i++,j++){
@@ -480,7 +480,7 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
          return score;
 	}
 	
-	//pattern1: A Triangle - white pawns on squares 27, 31 and 32 or red pawns on squares 6,1,2
+	//Feature 20 - pattern1: A Triangle - white pawns on squares 27, 31 and 32 or red pawns on squares 6,1,2
 	public int getPattern1(CheckersState state, String player){
 		int score=0;
 		if(player.equals("O")){			
@@ -494,7 +494,7 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 	   return score;
 	}
 	
-	//Pattern2: An Oreo - white pawns on squares 26, 30 and 31 or red pawns on squares 7,2,3
+	//Feature 21 - Pattern2: An Oreo - white pawns on squares 26, 30 and 31 or red pawns on squares 7,2,3
 	public int getPattern2(CheckersState state, String player){
 		int score=0;
 		if(player.equals("O"))	
@@ -508,7 +508,7 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 		return score;
 	}
 	
-	//Pattern3: A Bridge - white pawns on squares 30 and 32 or red pawns on squares 1,3
+	//Feature 22 - Pattern3: A Bridge - white pawns on squares 30 and 32 or red pawns on squares 1,3
 	public int getPattern3(CheckersState state, String player){
 		int score=0;
 		if(player.equals("O"))
@@ -522,7 +522,7 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 		return score;
 	}
 	
-	//Pattern4: A Pawn in the Corner - white pawn on square 29 or red pawn on square 4
+	//Feature 24 - Pattern4: A Pawn in the Corner - white pawn on square 29 or red pawn on square 4
 	public int getPattern4(CheckersState state, String player){
 		int score=0;
 		if(player.equals("O"))
@@ -536,7 +536,7 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 		return score;
 	}
 	
-	//Pattern5: A King in the Corner - white king on square 4 or red king on square 29
+	//Feature 25 - Pattern5: A King in the Corner - white king on square 4 or red king on square 29
 	public int getPattern5(CheckersState state, String player){
 		int score=0;
 		if(player.equals("O"))
