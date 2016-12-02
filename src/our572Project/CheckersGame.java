@@ -425,13 +425,16 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 		for(int i=1;i<8;i+=2){
 			if(state.getValue(i, 0).equals(player))
 				score++;
-			if(state.isPlayerAndKing(i, 0, player))
+			// for Xiaoqian: state.getValue(i, 0) includes all pieces of one player, regardless of it's pawn or king,
+			// 				 using state.isPlayerAndKing(i, 0, player) again will recount the kings.
+			if(state.isPlayerAndKing(i, 0, player)) 
 				score++;
 		}
 		
 		for(int i=0;i<8;i+=2){
 			if(state.getValue(i, 7).equals(player))
 				score++;
+			// for Xiaoqian: same problem here
 			if(state.isPlayerAndKing(i, 7, player))
 				score++;
 		}
@@ -441,6 +444,11 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 	
 	//Feature 10 - Layout feature 2: get number of attacking pieces, pawn=1, king=2
 	public int getAttackers(CheckersState state, String player){
+		
+		// for Xiaoqian: is this function finished?
+		//               seems you need to first distinguish the player in order to get where the "3 topmost rows" are
+		//				 and then distinguish whether it is pawn.
+		
 		int num=0;
 		for(int i=1;i<7;i++)
 			for(int j=0;j<=7;j++){
