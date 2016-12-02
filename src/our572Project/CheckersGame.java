@@ -354,6 +354,8 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 	{
 		int distance = 0;
 		
+		// for wandi: should this distance applied only to pawns, here it seems has been applied to all pieces including king.
+		
 		if (player == CheckersState.X)	//Red starts on the top
 		{
 			for (int i = 0; i < 8; i++)
