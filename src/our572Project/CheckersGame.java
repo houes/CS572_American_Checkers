@@ -306,6 +306,18 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 		
 		List<CheckerAction> list = state.getFeasibleMoves(player);
 		
+		// for wandi: 
+		// 1. getFeasibleMoves(player) returns actions for a specific player, so you don't have to check player later,
+		//    you could directly you state.isKing(XYlocation pos) to check if it is king
+		// 2. getFeasibleMoves(player) return multiple actions for one piece if any,say
+		//	  CheckerAction(Node0, pos0)
+		//    CheckerAction(Node0, pos1)
+		//    both pos0 and pos1 are valid moves for Node0
+		//    therefore, in your following loop, the same Pawn could be counted twice in case
+		//    it is not king and has two valid moves.
+		//    Therefore, you may have to filter the list returned from state.getFeasibleMoves(player) first
+		//    to get a list of actions whose SelNodes are all unique.
+		
 		for (int i = 0; i < list.size(); i++)
 		{
 			CheckerAction action = list.get(i);
@@ -324,6 +336,8 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 		int nMoveableKings = 0;
 		
 		List<CheckerAction> list = state.getFeasibleMoves(player);
+		
+		// wandi: same problem here, the king number are recounted by (the number of feasible moves it has -1).
 		
 		for (int i = 0; i < list.size(); i++)
 		{
