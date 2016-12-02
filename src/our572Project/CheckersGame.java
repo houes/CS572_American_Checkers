@@ -260,22 +260,34 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 		//Expert 3Phase: Feature (3), (10)-(12), (16), (20)-(23) and (25).
 		int res = 0;
 		int phase = getPhase(state);
-		int nSafePawns = getSafePawns(state, player); //(3)
-		int nAttackers = getAttackers(state, player); //(10)
-		//int 
+		int nSafePawns = getSafePawns(state, player);	//(3)
+		int nAttackers = getAttackers(state, player);	//(10)
+		int nCentralPawn = getCentralPawn(state, player);	//(11)
+		int nCentralKing = getCentralKing(state, player); 	//(12)
+		int nDoubleDiagKing = getDoubleDiagKing(state, player);	//(16)
+		int nTriangle = getTriangle(state, player);	//(20)
+		int nOreo = getOreo(state, player);	//(21)
+		int nBridge = getBridge(state, player);	//(22)
+		int nDog = getDog(state, player);	//(23)
+		int nCornerKing = getCornerKing(state, player);	//(25)
+		
 		
 		//I'll change the parameters later. Now I just assign all parameters to 1.
 		if (phase == 1)
 		{	
-			//res = 
+			//The parameter for kings should be low or zero. There doesn't exist a king.
+			res = nSafePawns + nAttackers + nCentralPawn + nCentralKing + nDoubleDiagKing + 
+					nTriangle + nOreo + nBridge + nDog + nCornerKing;
 		}
 		else if (phase == 2)
 		{
-			//res = 
+			res = nSafePawns + nAttackers + nCentralPawn + nCentralKing + nDoubleDiagKing + 
+					nTriangle + nOreo + nBridge + nDog + nCornerKing;
 		}
 		else
 		{
-			//res = 
+			res = nSafePawns + nAttackers + nCentralPawn + nCentralKing + nDoubleDiagKing + 
+					nTriangle + nOreo + nBridge + nDog + nCornerKing;
 		}
 		
 		return res;
