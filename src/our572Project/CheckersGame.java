@@ -93,16 +93,26 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 		}
 		else if (num == 1)
 		{
-			//Evaluation function 1
+			//Evaluation function 1: weighted board
 			result = evalFunc1(state, player);
+		}
+		else if (num == 2)
+		{
+			//Evaluation function 2: 8F linear heuristics
+			result = evalFunc2(state, player);
+		}
+		else if (num == 3)
+		{
+			//Evaluation function 3: 25F linear heuristics
+			result = evalFunc2(state, player);
+		}
+		else if (num == 4)
+		{
+			//Evaluation function 4: 3Phase
 		}
 		else
 		{
-			int simpleFeature = getSimpleFeature(state, player);
-			int layoutFeature = getLayoutFeature(state, player);
-			int patternFeature = getPatternFeature(state, player);
-			
-			result = simpleFeature + layoutFeature + patternFeature;
+			//Evaluation function 4: Expert 3Phase
 		}
 		
 		return result;
@@ -194,12 +204,134 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 		return res;
 	}
 	
-	public int getSimpleFeature(CheckersState state, String player)
+	public int evalFunc2(CheckersState state, String player)
 	{
+		//8F linear heuristics
+		
+		return getSimpleFeature(state, player);
+	}
+	
+	public int evalFunc3(CheckersState state, String player)
+	{
+		//25F linear heuristics
+		
+		int res = getSimpleFeature(state, player) + getLayoutFeature(state, player) +
+				getPatternFeature(state, player);
+				
+		return res;
+	}
+	
+	public int evalFunc4(CheckersState state, String player)
+	{
+		//3Phase (Using feature 1-8)
+		int res = 0;
+		int phase = getPhase(state);
+		int nPawns = getPawns(state, player);
+		int nKings = getKings(state, player);
+		int nSafePawns = getSafePawns(state, player);
+		int nSafeKings = getSafeKings(state, player);
+		int nMoveablePawns = getMoveablePawns(state, player);
+		int nMoveableKings = getMoveableKings(state, player);
+		int nProDistance = getProDistance(state, player);
+		int nUnoccupied = getUnoccupied(state, player);
+		
+		//I'll change the parameters later. Now I just assign all parameters to 1.
+		if (phase == 1)
+		{	
+			res = nPawns + nKings + nSafePawns + nSafeKings + nMoveablePawns + nMoveableKings + 
+					nProDistance + nUnoccupied;
+		}
+		else if (phase == 2)
+		{
+			res = nPawns + nKings + nSafePawns + nSafeKings + nMoveablePawns + nMoveableKings + 
+					nProDistance + nUnoccupied;
+		}
+		else
+		{
+			res = nPawns + nKings + nSafePawns + nSafeKings + nMoveablePawns + nMoveableKings + 
+					nProDistance + nUnoccupied;
+		}
+		
+		return res;
+	}
+	
+	public int evalFunc5(CheckersState state, String player)
+	{
+		//Expert 3Phase: Feature (3), (10)-(12), (16), (20)-(23) and (25).
+		int res = 0;
+		int phase = getPhase(state);
+		int nSafePawns = getSafePawns(state, player); //(3)
+		int nAttackers = getAttackers(state, player); //(10)
+		//int 
+		
+		//I'll change the parameters later. Now I just assign all parameters to 1.
+		if (phase == 1)
+		{	
+			//res = 
+		}
+		else if (phase == 2)
+		{
+			//res = 
+		}
+		else
+		{
+			//res = 
+		}
+		
+		return res;
+	}
+	
+	
+	public int getPhase(CheckersState state)
+	{
+		int i, j;
+		int nRed = 0;
+		int nWhite = 0;
+		int nKing = 0;
+		
+		//Beginning: each player has more than 3 pawns and no kings are present on the board
+		//Kings: both players have more than 3 pieces and at least one king is present
+		//Ending: one or both players have 3 pieces or less. 
+		
+		for (i = 0; i < 8; i++)
+			for (j = 0; j < 8; j++)
+			{
+				String cell = state.getValue(j, i);
+				if (cell.equals("X"))
+					nRed++;
+				else if (cell.equals("O"))
+					nWhite++;
+				
+				String king = state.getKingValue(j, i);
+				if (king.equals("K"))
+					nKing++;
+			}
+		
+		if ((nRed > 3) && (nWhite > 3))
+		{
+			if (nKing == 0)
+				return 1;
+			else
+				return 2;
+		}
+		else
+			return 3;
+	}
+	
+	public int getSimpleFeature(CheckersState state, String player)
+	{	
 		int score = 0;
 		int nPawns = getPawns(state, player);
 		int nKings = getKings(state, player);
 		int nSafePawns = getSafePawns(state, player);
+		int nSafeKings = getSafeKings(state, player);
+		int nMoveablePawns = getMoveablePawns(state, player);
+		int nMoveableKings = getMoveableKings(state, player);
+		int nProDistance = getProDistance(state, player);
+		int nUnoccupied = getUnoccupied(state, player);
+		
+		score = nPawns + nKings + nSafePawns + nSafeKings + nMoveablePawns + nMoveableKings + 
+				nProDistance + nUnoccupied;
 		
 		return score;
 	}
