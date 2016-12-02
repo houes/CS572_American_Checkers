@@ -1,5 +1,6 @@
 package our572Project;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -301,10 +302,9 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 	
 	//Feature 5
 	public int getMoveablePawns(CheckersState state, String player)
-	{
-		int nMoveablePawns = 0;
-		
+	{	
 		List<CheckerAction> list = state.getFeasibleMoves(player);
+		List<XYLocation> record = new ArrayList<XYLocation> (); //Record all moveable pawns 
 		
 		// for wandi: 
 		// 1. getFeasibleMoves(player) returns actions for a specific player, so you don't have to check player later,
@@ -321,32 +321,40 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 		for (int i = 0; i < list.size(); i++)
 		{
 			CheckerAction action = list.get(i);
-			if (state.isPlayerAndKing(action.getSelNode(), player) == true)
+			XYLocation current = action.getSelNode();
+			if (state.isKing(current) == true)
 				continue;
-			else if (state.getValue(action.getSelNode()).equals(player))
-				nMoveablePawns++;
+			else
+			{	
+				if (!record.contains(current))
+				{	
+					record.add(current);
+				}
+			}
 		}
 		
-		return nMoveablePawns;
+		return record.size();
 	}
 	
 	//Feature 6
 	public int getMoveableKings(CheckersState state, String player)
-	{
-		int nMoveableKings = 0;
-		
+	{		
 		List<CheckerAction> list = state.getFeasibleMoves(player);
+		List<XYLocation> record = new ArrayList<XYLocation> (); //Record all moveable kings 
 		
 		// wandi: same problem here, the king number are recounted by (the number of feasible moves it has -1).
 		
 		for (int i = 0; i < list.size(); i++)
 		{
 			CheckerAction action = list.get(i);
-			if (state.isPlayerAndKing(action.getSelNode(), player) == true)
-				nMoveableKings++;
+			XYLocation current = action.getSelNode();
+			if ((state.isKing(current) == true) && (!record.contains(current)))
+			{
+				record.add(current);
+			}
 		}
 		
-		return nMoveableKings;
+		return record.size();
 	}
 	
 	//Feature 7
@@ -361,7 +369,7 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 			for (int i = 0; i < 8; i++)
 				for (int j = 0; j < 8; j++)
 				{
-					if (state.getValue(j, i).equals(CheckersState.X))
+					if ((state.getValue(j, i).equals(CheckersState.X)) && (!state.getKingValue(j, i).equals("K")))
 						distance += (7 - i);
 				}
 		}
@@ -370,7 +378,7 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 			for (int i = 0; i < 8; i++)
 				for (int j = 0; j < 8; j++)
 				{
-					if (state.getValue(j, i).equals(CheckersState.X))
+					if ((state.getValue(j, i).equals(CheckersState.O)) && (!state.getKingValue(j, i).equals("K")))
 						distance += i;
 				}
 		}
