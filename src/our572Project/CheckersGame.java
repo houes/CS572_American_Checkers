@@ -104,7 +104,7 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 		else if (num == 3)
 		{
 			//Evaluation function 3: 25F linear heuristics
-			result = evalFunc2(state, player);
+			result = evalFunc3(state, player);
 		}
 		else if (num == 4)
 		{
@@ -584,18 +584,18 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 				+num_LonerKing
 				+num_Holes;
 		
-		
-        System.out.println("Number of Defenders:"+num_Defenders);
-        System.out.println("Number of Attackers:"+num_Attackers);
-        System.out.println("Number of CentralPawn:"+num_CentralPawn);
-        System.out.println("Number of CentralKing:"+num_CentralKing);
-        System.out.println("Number of MainDigPawn:"+num_MainDiagPawn);
-        System.out.println("Number of MainDiagKing:"+num_MainDiagKing);
-        System.out.println("Number of DoubleDiagPawn:"+num_DoubleDiagPawn);
-        System.out.println("Number of DoubleDiagKing:"+num_DoubleDiagKing);
-        System.out.println("Number of LonerPawn:"+num_LonerPawn);
-        System.out.println("Number of LonerKing:"+num_LonerKing);
-        System.out.println("Number of Holes:"+num_Holes);
+//		System.out.println("Get features for "+player);
+//        System.out.println("Number of Defenders:"+num_Defenders);
+//        System.out.println("Number of Attackers:"+num_Attackers);
+//        System.out.println("Number of CentralPawn:"+num_CentralPawn);
+//        System.out.println("Number of CentralKing:"+num_CentralKing);
+//        System.out.println("Number of MainDigPawn:"+num_MainDiagPawn);
+//        System.out.println("Number of MainDiagKing:"+num_MainDiagKing);
+//        System.out.println("Number of DoubleDiagPawn:"+num_DoubleDiagPawn);
+//        System.out.println("Number of DoubleDiagKing:"+num_DoubleDiagKing);
+//        System.out.println("Number of LonerPawn:"+num_LonerPawn);
+//        System.out.println("Number of LonerKing:"+num_LonerKing);
+//        System.out.println("Number of Holes:"+num_Holes);
 		return score;
 	}
 	
@@ -744,7 +744,7 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 		for(int i=0;i<=7;i++)
 			for(int j=0;j<=7;j++)
 				if(state.getValue(i, j).equals(player)&&!state.isPlayerAndKing(i, j, player))
-					if(state.getValue(i-1, j-1).equals('-')&&state.getValue(i-1, j+1).equals('-')&&state.getValue(i+1, j+1).equals('-')&&state.getValue(i+1, j-1).equals('-'))
+					if(state.getValue(i-1, j-1).equals("-")&&state.getValue(i-1, j+1).equals("-")&&state.getValue(i+1, j+1).equals("-")&&state.getValue(i+1, j-1).equals("-"))
 						num++;					
 	
 		return num;
@@ -756,7 +756,7 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 		for(int i=0;i<=7;i++)
 			for(int j=0;j<=7;j++)
 				if(state.isPlayerAndKing(i, j, player))
-					if(state.getValue(i-1, j-1).equals('-')&&state.getValue(i-1, j+1).equals('-')&&state.getValue(i+1, j+1).equals('-')&&state.getValue(i+1, j-1).equals('-'))
+					if(state.getValue(i-1, j-1).equals("-")&&state.getValue(i-1, j+1).equals("-")&&state.getValue(i+1, j+1).equals("-")&&state.getValue(i+1, j-1).equals("-"))
 						num++;
 		
 		return num;
@@ -804,12 +804,13 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
         		 +num_CornerPawn
            		 +num_CornerKing;
          
-         System.out.println("Number of Triangle:"+num_Triangle);
-         System.out.println("Number of Oreo:"+num_Oreo);
-         System.out.println("Number of Bridge:"+num_Bridge);
-         System.out.println("Number of Dog:"+num_Dog);
-         System.out.println("Number of ConerPawn:"+num_CornerPawn);
-         System.out.println("Number of CornerKing:"+num_CornerKing);
+//         System.out.println("Number of Triangle:"+num_Triangle);
+//         System.out.println("Number of Oreo:"+num_Oreo);
+//         System.out.println("Number of Bridge:"+num_Bridge);
+//         System.out.println("Number of Dog:"+num_Dog);
+//         System.out.println("Number of ConerPawn:"+num_CornerPawn);
+//         System.out.println("Number of CornerKing:"+num_CornerKing);
+//         System.out.println("**********************************");
          return score;
 	}
 	
@@ -893,7 +894,7 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 
 		if(player.equals("X"))
 			if(state.isPlayerAndKing(0,7,player))
-		    	score+=3;
+		    	score=1;
 			
 		return score;
 	}
