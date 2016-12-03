@@ -84,7 +84,7 @@ public class AlphaBetaSearch<STATE, ACTION, PLAYER> implements
 		metrics.incrementInt(METRICS_NODES_EXPANDED);
 
 			if(depth<=1)
-				return game.getEvaluation(state, player, 0);
+				return game.getEvaluation(state, player, 3);
 			else if (game.isTerminal(state))
 				return game.getUtility(state, player);
 
@@ -106,7 +106,7 @@ public class AlphaBetaSearch<STATE, ACTION, PLAYER> implements
 		metrics.incrementInt(METRICS_NODES_EXPANDED);
 		
 			if(depth<=1)
-				return game.getEvaluation(state, player, 0);
+				return game.getEvaluation(state, player, 3);
 			else if (game.isTerminal(state))
 				return game.getUtility(state, player);
 		
