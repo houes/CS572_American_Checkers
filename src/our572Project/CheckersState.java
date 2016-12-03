@@ -28,18 +28,6 @@ public class CheckersState implements Cloneable {
 			EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,
 			EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY };
 	
-//	private String[] board=new String[]{EMPTY, EMPTY, EMPTY, O, EMPTY, O, EMPTY, X, EMPTY, EMPTY, X, EMPTY, EMPTY, EMPTY, EMPTY,
-//			EMPTY, EMPTY, EMPTY, EMPTY, X, EMPTY, X, EMPTY, EMPTY, X, EMPTY, X, EMPTY, X, EMPTY, EMPTY, EMPTY,
-//			EMPTY, EMPTY, EMPTY, O, EMPTY, EMPTY, EMPTY, EMPTY, O, EMPTY, O, EMPTY, O, EMPTY, O, EMPTY, EMPTY, O,
-//			EMPTY, EMPTY, EMPTY, O, EMPTY, O, EMPTY, EMPTY, EMPTY, EMPTY, X, EMPTY, EMPTY, EMPTY };
-//	private String[] kingBoard=new String[] {EMPTY, EMPTY, EMPTY, K, EMPTY, K, EMPTY, EMPTY, EMPTY, EMPTY,
-//			EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,
-//			EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,
-//			EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,
-//			EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, K, EMPTY, EMPTY, EMPTY };
-		
-	
-	
 
 	private String playerToMove = X;
 	private double utility = -1; // 1: win for X, 0: win for O, 0.5: draw
@@ -54,7 +42,8 @@ public class CheckersState implements Cloneable {
 
 	public String getValue(int col, int row) {
 		if(col<0||col>7||row<0||row>7)
-			 throw new IllegalArgumentException("Error in getValue(): Board position out of boundary (0-7) !");
+			 //throw new IllegalArgumentException("Error in getValue(): Board position out of boundary (0-7) !");
+               return EMPTY;
 		return board[getAbsPosition(col, row)];
 	}
 

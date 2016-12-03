@@ -243,8 +243,9 @@ public class CheckersApp {
 			searchMetrics = search.getMetrics();
 			currState = game.getResult(currState, action);
 			
-			String player=game.getPlayer(currState);
-			game.getEvaluation(currState, player, 3);
+			//for test the feature functions
+//			String player=game.getPlayer(currState);
+//			game.getEvaluation(currState, player, 3);
 		}
 
 		/** Updates the status bar. */

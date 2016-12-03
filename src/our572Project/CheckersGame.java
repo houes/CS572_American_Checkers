@@ -767,7 +767,7 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 		int num=0;
 		for(int i=0;i<=7;i++){
 			for(int j=0;j<=7;j++){
-				if(state.getValue(i, j).equals('-')){
+				if(state.getValue(i, j).equals("-")){
 					int temp=0;
 					if(state.getValue(i-1, j-1).equals(player))
 						temp++;
