@@ -178,10 +178,18 @@ public class CheckersApp {
 								if (currState.getFeasiblePositions(selected_piece).contains(destination)) {
 									currState = game.getResult(currState, cAction);
 								} else {
+									if(currState.getFeasibleMovesFirstNodes().contains(destination)) // user choose a new piece to move
+									{
+										selected_piece = destination; 
+										statusBar.setText("user repick feasible piece, current turn: "+game.getPlayerByColor(currState));
+									}
+									else // user choose a infeasible position to move to.
+									{
+										statusBar.setText(
+											"Invalid position, You must select a feasible destination(jump is mandatory)! current piece move: "
+													+ game.getPlayerByColor(currState)+" "+ selected_piece.toString1());
+									}
 									repick_piece = true;
-									statusBar.setText(
-											"Invalid position, You must select a feasible destination, jump is mandatory! current turn: "
-													+ game.getPlayerByColor(currState));
 								}
 								break;
 							}

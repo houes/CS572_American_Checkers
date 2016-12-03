@@ -158,6 +158,10 @@ public class XYLocation {
 	public String toString() {
 		return " ( " + xCoOrdinate + " , " + yCoOrdinate + " ) ";
 	}
+	
+	public String toString1() {
+		return " ( " + Integer.toString(xCoOrdinate+1) + " , " + Integer.toString(yCoOrdinate+1) + " ) ";
+	}
 
 	@Override
 	public int hashCode() {
