@@ -123,13 +123,7 @@ public class CheckersState implements Cloneable {
 		XYLocation to_pos = action.getMoveTo();
 
 		// dismark middle king if jump
-		if (Math.abs(to_pos.getXCoOrdinate() - from_pos.getXCoOrdinate()) == 2) // regular jump
-		{
-			int midx = (from_pos.getXCoOrdinate() + to_pos.getXCoOrdinate()) / 2;
-			int midy = (from_pos.getYCoOrdinate() + to_pos.getYCoOrdinate()) / 2;
-			setKingValue(midx, midy, EMPTY);
-		}
-		else if(action.isMultiJump()) // multi-jump
+		if(action.isMultiJump()) // multi-jump
 		{
 			List<XYLocation> completeSequence = new ArrayList<XYLocation> (action.getMoveToSequence());
 			completeSequence.add(0, action.getSelNode()); // add head
@@ -140,8 +134,12 @@ public class CheckersState implements Cloneable {
 				int midx = (fromItr.getXCoOrdinate() + toItr.getXCoOrdinate()) / 2;
 				int midy = (fromItr.getYCoOrdinate() + toItr.getYCoOrdinate()) / 2;
 				setKingValue(midx, midy, EMPTY);
-			}
-				
+			}	
+		} else if (Math.abs(to_pos.getXCoOrdinate() - from_pos.getXCoOrdinate()) == 2) // regular jump
+		{
+			int midx = (from_pos.getXCoOrdinate() + to_pos.getXCoOrdinate()) / 2;
+			int midy = (from_pos.getYCoOrdinate() + to_pos.getYCoOrdinate()) / 2;
+			setKingValue(midx, midy, EMPTY);
 		}
 		
 		if (reachOpponnetHomeRow(to_pos) && !isKing(from_pos)) // new king
@@ -169,12 +167,7 @@ public class CheckersState implements Cloneable {
 
 		// 2.dismark middle position if jump
 		String opponent = (playerToMove == X ? O : X);
-		if (Math.abs(to_pos.getXCoOrdinate() - from_pos.getXCoOrdinate()) == 2)  // regular jump
-		{
-			int midx = (from_pos.getXCoOrdinate() + to_pos.getXCoOrdinate()) / 2;
-			int midy = (from_pos.getYCoOrdinate() + to_pos.getYCoOrdinate()) / 2;
-			dismark(midx, midy, opponent);
-		}else if(action.isMultiJump()) // multi-jump
+		if(action.isMultiJump()) // multi-jump
 		{
 			List<XYLocation> completeSequence = new ArrayList<XYLocation> (action.getMoveToSequence());
 			completeSequence.add(0, action.getSelNode()); // add head
@@ -187,6 +180,11 @@ public class CheckersState implements Cloneable {
 				dismark(midx, midy, opponent);
 			}
 				
+		}else if (Math.abs(to_pos.getXCoOrdinate() - from_pos.getXCoOrdinate()) == 2)  // regular jump
+		{
+			int midx = (from_pos.getXCoOrdinate() + to_pos.getXCoOrdinate()) / 2;
+			int midy = (from_pos.getYCoOrdinate() + to_pos.getYCoOrdinate()) / 2;
+			dismark(midx, midy, opponent);
 		}
 		
 		// 3.mark destination
@@ -586,6 +584,21 @@ public class CheckersState implements Cloneable {
 		}
 		
 		return destinations;
+	}
+	
+	public List<CheckerAction> getFeasibleActionsMatching(XYLocation from, XYLocation to)
+	{
+		List<CheckerAction> result = new ArrayList<CheckerAction>();
+		
+		List<CheckerAction> feasibleMoves = getFeasibleMoves(from);
+		
+		for(CheckerAction action: feasibleMoves)
+		{
+			if(action.getMoveTo().equals(to))
+				result.add(action);
+		}
+		
+		return result;
 	}
 
 	public List<CheckerAction> getJumpMoves(List<CheckerAction> allFeasibleMoves)

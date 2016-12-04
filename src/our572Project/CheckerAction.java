@@ -80,7 +80,7 @@ public class CheckerAction {
 		return internalPos;
 	}
 	
-	public List<XYLocation> getCompleteHistory()
+	public List<XYLocation> getCompleteMultiJumpPath()
 	{
 		// return all positions of the move: from first to last positions.
 		List<XYLocation> historyPath = new ArrayList<XYLocation>();

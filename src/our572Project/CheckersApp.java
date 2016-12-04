@@ -176,10 +176,24 @@ public class CheckersApp {
 						for (int i = 0; i < 64; i++)
 							if (ae.getSource() == squares[i]) {
 								XYLocation destination = new XYLocation(i % 8, i / 8);
-								CheckerAction cAction = new CheckerAction(selected_piece, destination);
+								//CheckerAction cAction = new CheckerAction(selected_piece, destination);
 
 								if (currState.getFeasibleDestinations(selected_piece).contains(destination)) {
-									currState = game.getResult(currState, cAction);
+									List<CheckerAction> possibleActions = currState.getFeasibleActionsMatching(selected_piece, destination);
+									CheckerAction firstAction = possibleActions.get(0);
+									CheckerAction chosenAction;
+									if(possibleActions.size()==1)
+										chosenAction = firstAction;
+									else
+									{	// TODO: change later for the user to choose one of the possible actions.
+										chosenAction = firstAction;
+									}
+									if(chosenAction.isMultiJump())
+										multiJumpInternalPath = chosenAction.getCompleteMultiJumpPath();
+									else
+										multiJumpInternalPath = null;
+									
+									currState = game.getResult(currState, chosenAction);
 								} else {
 									if(currState.getFeasibleMovesFirstNodes().contains(destination)) // user choose a new piece to move
 									{
@@ -221,8 +235,14 @@ public class CheckersApp {
 						squares[i].setIcon(null);
 				}
 				
-				if(multiJumpInternalPath!=null)
+				if(multiJumpInternalPath!=null) // we have multi-jump, draw trace
 				{
+					if(boardColorChanged == true) // clear previous trace if any
+					{
+						setDefaultColor();
+						boardColorChanged = false;
+					}
+					
 					for(XYLocation pos: multiJumpInternalPath)
 					{
 						int col = pos.getXCoOrdinate();
@@ -232,8 +252,9 @@ public class CheckersApp {
 					}
 					boardColorChanged = true;
 				}
-				else if(boardColorChanged)
+				else if(boardColorChanged) // if don't need to draw trace and there are previous trace to clear
 				{
+					// clear previous trace
 					setDefaultColor();
 					boardColorChanged = false;
 				}
@@ -272,7 +293,7 @@ public class CheckersApp {
 			currState = game.getResult(currState, action);
 			
 			if(action.isMultiJump())
-				multiJumpInternalPath = action.getCompleteHistory();
+				multiJumpInternalPath = action.getCompleteMultiJumpPath();
 			else
 				multiJumpInternalPath = null;
 			
