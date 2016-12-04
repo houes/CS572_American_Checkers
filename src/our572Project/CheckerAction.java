@@ -6,17 +6,25 @@ public class CheckerAction {
 
 	XYLocation selNode;
 	XYLocation moveTo;
-	List <XYLocation> moveToKingRow;
-
+	
+	// the following is for multi-jumps
+	CheckerAction parent;
+	List<CheckerAction> nextJumps;
+	boolean hasNextJumps = false;
+	boolean isMultiJump = false;
+	
+	List <XYLocation> moveToSequence; // more multi-Jumps
+	
 	public CheckerAction(XYLocation selNode_, XYLocation moveTo_) {
 		selNode = selNode_;
 		moveTo = moveTo_;
 	}
 	
-	public CheckerAction(XYLocation selNode_, XYLocation moveTo_,List<XYLocation> moveToKingRow_) {
+	public CheckerAction(XYLocation selNode_, XYLocation moveTo_,List<XYLocation> moveToSequence_) {
 		selNode = selNode_;
 		moveTo = moveTo_;
-		moveToKingRow = moveToKingRow_;
+		moveToSequence = moveToSequence_;
+		isMultiJump = true;
 	}
 
 	public XYLocation getSelNode() {
@@ -27,13 +35,44 @@ public class CheckerAction {
 		return moveTo;
 	}
 
-	public List<XYLocation> getmvoeToKingRow(){
-		return moveToKingRow;
+	public boolean hasNextJumps()
+	{
+		return hasNextJumps;
+	}
+	
+	public boolean isMultiJump()
+	{
+		return isMultiJump;
+	}
+	
+	public List<CheckerAction> getNextJumps()
+	{
+		return nextJumps;
+	}
+		
+	public void setNextJumps(List<CheckerAction> nextJumps_)
+	{
+		hasNextJumps = true;
+		nextJumps = nextJumps_;
+	}
+	
+	public void setParentJump(CheckerAction parent_)
+	{
+		parent = parent_;
+	}
+	
+	public CheckerAction getParent()
+	{
+		return parent;
+	}
+	
+	public List<XYLocation> getMoveToSequence(){
+		return moveToSequence;
 	}
 	
 	@Override
 	public boolean equals(Object o) {
-		if (null == o || !(o instanceof XYLocation)) {
+		if (null == o || !(o instanceof CheckerAction)) {
 			return super.equals(o);
 		}
 
@@ -43,7 +82,17 @@ public class CheckerAction {
 
 	@Override
 	public String toString() {
-		return " selNode = " + selNode.toString() + " moveTo= " + moveTo.toString();
+		StringBuilder strBuilder = new StringBuilder();
+		strBuilder.append(" selNode = " + selNode.toString() + " moveTo= " + moveTo.toString());
+		if(moveToSequence!=null && !moveToSequence.isEmpty())
+		{
+			strBuilder.append(System.getProperty("line.separator"));
+			strBuilder.append(" intermediate pos:");
+			for(int i=0;i<moveToSequence.size()-1;i++)
+				strBuilder.append(" "+moveToSequence.get(i).toString());
+		}
+		
+		return strBuilder.toString();
 	}
 
 }

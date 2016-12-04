@@ -2,7 +2,10 @@ package our572Project;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 /**
  * A state of the Tic-tac-toe game is characterized by a board containing
@@ -258,69 +261,274 @@ public class CheckersState implements Cloneable {
 
 	}
 
-	public List<XYLocation> getFeasiblePositions(XYLocation selNode) {
+	public List<CheckerAction> getRegularMoves(XYLocation selNode)
+	{
+		String player = getValue(selNode);
+		if(player.equals(EMPTY))
+			throw new IllegalArgumentException("Error in getRegularMoves(): player being Empty");
+		
+		return getRegularMoves(selNode,player);
+	}
+			
+	public List<CheckerAction> getRegularMoves(XYLocation selNode, String player)
+	{
+		// check the distance 1 four corners(regular moves)
 
-		return getFeasiblePositions(selNode, getPlayerToMove());
+		List<CheckerAction> result = new ArrayList<CheckerAction>();
+		
+		int col = selNode.getXCoOrdinate();
+		int row = selNode.getYCoOrdinate();
+		List<XYLocation> moveToPos = new ArrayList<XYLocation>();
+
+		moveToPos.add(new XYLocation(col - 1, row - 1));
+		moveToPos.add(new XYLocation(col - 1, row + 1));
+		moveToPos.add(new XYLocation(col + 1, row + 1));
+		moveToPos.add(new XYLocation(col + 1, row - 1));
+		for (XYLocation pos : moveToPos) {
+			if (pos.isWithinBoundary(0, 7))
+				if (getValue(pos).equals(EMPTY))
+				{
+					if(isKing(selNode))
+						result.add(new CheckerAction(selNode,pos));
+					else if (isForward(selNode, pos, player))
+						result.add(new CheckerAction(selNode,pos));
+				}
+		}
+		
+		return result;
+	}
+	
+	public List<CheckerAction> getJumpMoves(XYLocation selNode)
+	{
+		String player = getValue(selNode);
+		if(player.equals(EMPTY))
+			throw new IllegalArgumentException("Error in getJumpMoves(): player being Empty");
+		
+		return getJumpMoves(selNode,player,isKing(selNode));
+	}
+	
+	public List<CheckerAction> getJumpMoves(XYLocation selNode, String player, boolean isNodeKing)
+	{
+		// compute the possible jump moves if provided
+		// 1. the location of the node, EMPTY is allowed
+		// 2. the player, has to be either "X" or "O"
+		// 3. whether the move is for a king.
+		
+		// check if it can jump(jump moves)  - distance 2 four corners
+		List<CheckerAction> result = new ArrayList<CheckerAction>();
+		
+		int col = selNode.getXCoOrdinate();
+		int row = selNode.getYCoOrdinate();
+		List<XYLocation> moveToPos = new ArrayList<XYLocation>();
+		
+		String opponent = (player == X ? O : X);
+		moveToPos.add(new XYLocation(col - 2, row - 2));
+		moveToPos.add(new XYLocation(col - 2, row + 2));
+		moveToPos.add(new XYLocation(col + 2, row + 2));
+		moveToPos.add(new XYLocation(col + 2, row - 2));
+		for (XYLocation pos : moveToPos) {
+			int xCoord = pos.getXCoOrdinate();
+			int yCoord = pos.getYCoOrdinate();
+			if (pos.isWithinBoundary(0, 7))
+				if (getValue(pos).equals(EMPTY)) {
+					int mid_x = (col + xCoord) / 2;
+					int mid_y = (row + yCoord) / 2;
+					if (getValue(mid_x, mid_y).equals(opponent))
+					{
+						if(isNodeKing)
+							result.add(new CheckerAction(selNode,pos));
+						else if (isForward(selNode, pos, player))
+							result.add(new CheckerAction(selNode,pos));
+					}
+				}
+		}
+		
+		return result;
+	}
+	
+	public List<CheckerAction> getFeasibleMoves(XYLocation selNode) {
+
+		return getFeasibleMoves(selNode, getPlayerToMove());
 	}
 
-	public List<XYLocation> getFeasiblePositions(XYLocation selNode, String player) {
+	public List<CheckerAction> getFeasibleMoves(XYLocation selNode, String player) {
 
 		// Compute the feasible destinations for a piece
-		// If the feasible moves includes only regular moves, output it.
-		// If the feasible moves includes both regular and jump moves, output only jump moves.
-		// If the feasible moves includes only jump moves, output it.
+
+		// If the feasible moves includes jump moves, 
+		//	return only jump moves.
+		// Else 
+		//	return regular moves or nothing.
 		
-		List<XYLocation> result_regular = new ArrayList<XYLocation>();
-		List<XYLocation> result_jump = new ArrayList<XYLocation>();
+		List<CheckerAction> result_regular = new ArrayList<CheckerAction>();
+		List<CheckerAction> result_jump = new ArrayList<CheckerAction>();
 
 		if (getValue(selNode).equals(player)) {
-			int col = selNode.getXCoOrdinate();
-			int row = selNode.getYCoOrdinate();
-			List<XYLocation> moveToPos = new ArrayList<XYLocation>();
-			// first, check the four corners(regular moves)
-			moveToPos.add(new XYLocation(col - 1, row - 1));
-			moveToPos.add(new XYLocation(col - 1, row + 1));
-			moveToPos.add(new XYLocation(col + 1, row + 1));
-			moveToPos.add(new XYLocation(col + 1, row - 1));
-			for (XYLocation pos : moveToPos) {
-				if (pos.isWithinBoundary(0, 7))
-					if (getValue(pos).equals(EMPTY))
-					{
-						if(isKing(selNode))
-							result_regular.add(pos);
-						else if (isForward(selNode, pos, player))
-							result_regular.add(pos);
-					}
-			}
-			moveToPos.clear();
-			// second, check if it can jump(jump moves)
-			String opponent = (player == X ? O : X);
-			moveToPos.add(new XYLocation(col - 2, row - 2));
-			moveToPos.add(new XYLocation(col - 2, row + 2));
-			moveToPos.add(new XYLocation(col + 2, row + 2));
-			moveToPos.add(new XYLocation(col + 2, row - 2));
-			for (XYLocation pos : moveToPos) {
-				int xCoord = pos.getXCoOrdinate();
-				int yCoord = pos.getYCoOrdinate();
-				if (pos.isWithinBoundary(0, 7))
-					if (getValue(pos).equals(EMPTY)) {
-						int mid_x = (col + xCoord) / 2;
-						int mid_y = (row + yCoord) / 2;
-						if (getValue(mid_x, mid_y).equals(opponent))
-						{
-							if(isKing(selNode))
-								result_jump.add(pos);
-							else if (isForward(selNode, pos, player))
-								result_jump.add(pos);
-						}
-					}
-			}
-		}
 
+			// first, check the four corners(regular moves)
+			result_regular = getRegularMoves(selNode);
+			
+			// second, check if it can jump(jump moves)
+			result_jump = getJumpMoves(selNode);
+		}
+		
+		ListIterator<CheckerAction> itr = result_jump.listIterator();
+		List<CheckerAction> result_multi_jump = new ArrayList<CheckerAction>();
+		
+		while(itr.hasNext())
+		{
+			List<CheckerAction> multiJumpsOfANode = getMultiJumpsOfANode(itr.next());
+			if(!multiJumpsOfANode.isEmpty())
+			{
+				result_multi_jump.addAll(multiJumpsOfANode);
+				itr.previous();
+				itr.remove();
+			}
+
+		}
+		result_jump.addAll(result_multi_jump);
+		
 		if(!result_jump.isEmpty())
 			return result_jump;
 		else
 			return result_regular;
+	}
+	
+	public List<CheckerAction> getMultiJumpsOfANode(CheckerAction theFirstJump)
+	{
+		CheckerAction multiJumps = new CheckerAction(theFirstJump.getSelNode(),theFirstJump.getMoveTo());
+
+		String player = getValue(theFirstJump.getSelNode());
+		
+		setNextJumps(multiJumps,player,isKing(theFirstJump.getSelNode()));
+		
+		List<CheckerAction> result = getDistinctMultiJumps(multiJumps);
+		
+/*		if(!result.isEmpty() && result.size()>=3)
+		{
+			System.out.println("debug");
+		}*/
+		
+		return result;
+	}
+	
+	public List<CheckerAction> getDistinctMultiJumps(CheckerAction multiJumps)
+	{
+		List<CheckerAction> result = new ArrayList<CheckerAction>();
+		
+		if(!multiJumps.hasNextJumps()) // return empty if it is not a multi-jump
+			return result;
+		
+		List<CheckerAction> leafNodes = getAllLeafNodes(multiJumps);
+
+		XYLocation firstPos = multiJumps.getSelNode();
+		
+		for(CheckerAction leaf: leafNodes)
+		{
+			List<XYLocation> consectiveMoves = new ArrayList<XYLocation>();
+			consectiveMoves.add(leaf.getMoveTo());
+			
+			CheckerAction parent = leaf.getParent();
+			while(parent!=null)
+			{
+				consectiveMoves.add(parent.getMoveTo());
+				parent = parent.getParent();
+			}
+			
+			Collections.reverse(consectiveMoves);
+			XYLocation lastPos = consectiveMoves.get(consectiveMoves.size()-1);
+			result.add(new CheckerAction(firstPos,lastPos,consectiveMoves));
+		}
+		
+		return result;
+	}
+	
+	public List<CheckerAction> getAllLeafNodes(CheckerAction node) {
+		List<CheckerAction> leafNodes = new ArrayList<CheckerAction>();
+	    if (node.nextJumps == null) {
+	        leafNodes.add(node);
+	    } else {
+	        for (CheckerAction child : node.nextJumps) {
+	            leafNodes.addAll(getAllLeafNodes(child));
+	        }
+	    }
+	    return leafNodes;
+	}
+	
+	public void setNextJumps(CheckerAction currJump, String player, boolean isNodeKing)
+	{		
+		List<CheckerAction> nextJumps = getNextJump(currJump,player,isNodeKing);
+		removeCircles(currJump,nextJumps);
+		
+		if(!nextJumps.isEmpty())
+		{	
+			currJump.setNextJumps(nextJumps);
+			for(CheckerAction jump: nextJumps)
+			{
+				jump.setParentJump(currJump);
+				setNextJumps(jump,player,isNodeKing);
+			}
+		}
+			
+	}
+	
+	public void removeCircles(CheckerAction currJump, List<CheckerAction> nextJumps)
+	{
+		// first, find history positions
+		List<XYLocation> historyPos = new ArrayList<XYLocation>();
+		
+		historyPos.add(currJump.getMoveTo());
+		
+		CheckerAction curr   = currJump;
+		CheckerAction parent = currJump.getParent();
+		
+		while(parent!=null)
+		{
+			historyPos.add(curr.getSelNode());
+			curr = parent;
+			parent = parent.getParent();
+		}
+		
+		historyPos.add(curr.getSelNode());// add the root
+		
+		// second remove any node that form a circle
+		ListIterator<CheckerAction> itr = nextJumps.listIterator();
+		while(itr.hasNext())
+		{
+			XYLocation lastPos = itr.next().getMoveTo();
+			// if the next position comes back to the history routine, 
+			// then forming a circle, remove such jump
+			if(historyPos.contains(lastPos)) 
+			{
+				itr.remove();
+			}
+		}
+	}
+	
+	
+	public List<CheckerAction> getNextJump(CheckerAction currJump, String player, boolean isNodeKing)
+	{
+		XYLocation from = currJump.getSelNode();
+		XYLocation moveTo = currJump.getMoveTo();
+		
+		CheckerAction reverseJump = new CheckerAction(moveTo, from);
+		List<CheckerAction> nextJumps = getJumpMoves(moveTo,player,isNodeKing);
+		nextJumps.remove(reverseJump);
+		
+		return nextJumps;
+	}
+	
+	public List<XYLocation> getFeasibleDestinations(XYLocation pieceToMove)
+	{
+		List<CheckerAction> feasibleMoves = getFeasibleMoves(pieceToMove);
+		List<XYLocation> destinations = new ArrayList<XYLocation>();
+		
+		for(CheckerAction action: feasibleMoves)
+		{
+			destinations.add(action.getMoveTo());
+		}
+		
+		return destinations;
 	}
 
 	public List<CheckerAction> getJumpMoves(List<CheckerAction> allFeasibleMoves)
@@ -369,10 +577,7 @@ public class CheckersState implements Cloneable {
 			for (int row = 0; row < 8; row++) {
 				if (getValue(col, row).equals(player)) {
 					XYLocation currNode = new XYLocation(col, row);
-					List<XYLocation> feasibleLocOfNode = getFeasiblePositions(currNode, player);
-					for (XYLocation moveToPos : feasibleLocOfNode) {
-						allFeasibleMoves.add(new CheckerAction(currNode, moveToPos));
-					}
+					allFeasibleMoves.addAll(getFeasibleMoves(currNode, player));	
 				}
 			}
 		}

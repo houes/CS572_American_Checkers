@@ -159,7 +159,7 @@ public class CheckersApp {
 						if (currSeletPiece.equals("EMPTY") || !currSeletPiece.equals(nextPlayer)) {
 							repick_piece = true;
 							statusBar.setText("Invalid piece, You must select a " + nextPlayerColor + " piece!");
-						} else if (currState.getFeasiblePositions(selected_piece).isEmpty()) {
+						} else if (currState.getFeasibleDestinations(selected_piece).isEmpty()) {
 							repick_piece = true;
 							statusBar.setText("Invalid " + nextPlayerColor + " piece, it cannot move, repick!");
 						} else if (!currState.getFeasibleMovesFirstNodes().contains(selected_piece)) {
@@ -175,7 +175,7 @@ public class CheckersApp {
 								XYLocation destination = new XYLocation(i % 8, i / 8);
 								CheckerAction cAction = new CheckerAction(selected_piece, destination);
 
-								if (currState.getFeasiblePositions(selected_piece).contains(destination)) {
+								if (currState.getFeasibleDestinations(selected_piece).contains(destination)) {
 									currState = game.getResult(currState, cAction);
 								} else {
 									if(currState.getFeasibleMovesFirstNodes().contains(destination)) // user choose a new piece to move
