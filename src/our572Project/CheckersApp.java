@@ -124,6 +124,9 @@ public class CheckersApp {
 				else
 					square.setBackground(new Color(0, 153, 76));
 
+				square.setOpaque(true);
+				//square.setBorderPainted(false);
+				
 				square.addActionListener(this);
 				squares[i] = square;
 				spanel.add(square);
@@ -249,6 +252,8 @@ public class CheckersApp {
 						int row = pos.getYCoOrdinate();
 						int absPos = 8*row+col;
 						squares[absPos].setBackground(new Color(255, 255, 204));
+						squares[absPos].setOpaque(true);
+						//squares[absPos].setBorderPainted(false);
 					}
 					boardColorChanged = true;
 				}
@@ -329,7 +334,11 @@ public class CheckersApp {
 					evenRow = !evenRow;
 				int myInt = (evenRow) ? 1 : 0;
 				if ((i + myInt) % 2 == 0)
+				{
 					squares[i].setBackground(new Color(182, 155, 76));
+					squares[i].setOpaque(true);
+					//squares[i].setBorderPainted(false);
+				}
 			}
 		}
 	}
