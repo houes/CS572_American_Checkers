@@ -89,9 +89,6 @@ public class AlphaBetaSearch<STATE, ACTION, PLAYER> implements
 			else if (game.isTerminal(state))
 				return game.getUtility(state, player);
 
-		
-		if (game.isTerminal(state))
-			return game.getUtility(state, player);
 		double value = Double.NEGATIVE_INFINITY;
 		for (ACTION action : game.getActions(state)) {
 			value = Math.max(value, minValue( //
@@ -111,8 +108,6 @@ public class AlphaBetaSearch<STATE, ACTION, PLAYER> implements
 			else if (game.isTerminal(state))
 				return game.getUtility(state, player);
 		
-		if (game.isTerminal(state))
-			return game.getUtility(state, player);
 		double value = Double.POSITIVE_INFINITY;
 		for (ACTION action : game.getActions(state)) {
 			value = Math.min(value, maxValue( //
