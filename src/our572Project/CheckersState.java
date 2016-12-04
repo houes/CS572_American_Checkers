@@ -33,7 +33,7 @@ public class CheckersState implements Cloneable {
 	
 
 	private String playerToMove = X;
-	private double utility = -1; // 1: win for X, 0: win for O, 0.5: draw
+	private int utility = -1; // 20000: win for X, 10000: win for O, 15000: draw, -1: game not end
 
 	public String getPlayerToMove() {
 		return playerToMove;
@@ -95,7 +95,7 @@ public class CheckersState implements Cloneable {
 		return isPlayerAndKing(pos,player);
 	}
 
-	public double getUtility() {
+	public int getUtility() {
 		return utility;
 	}
 
@@ -207,9 +207,9 @@ public class CheckersState implements Cloneable {
 
 	private void analyzeUtility() {
 		if (opponentHasNoPiece() || opponentHasNoFeasibleMoves()) {
-			utility = (playerToMove == X ? 1 : 0);
-		} else if (getNumberOfMarkedPositions() == 64) {
-			utility = 0.5;
+			utility = (playerToMove == X ? 20000 : 10000);
+		} else if (isGameDraw()) {
+			utility = 15000;
 		}
 	}
 
@@ -234,6 +234,12 @@ public class CheckersState implements Cloneable {
 			return false;
 	}
 
+	public boolean isGameDraw()
+	{
+		//TODO: has not designed a draw case yet.
+		return false;
+	}
+	
 	public int getNumberOfMarkedPositions() {
 		int retVal = 0;
 		for (int col = 0; col < 8; col++) {

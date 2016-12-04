@@ -68,14 +68,52 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 	
 	@Override
 	public double getUtility(CheckersState state, String player) {
-		double result = state.getUtility();
-		if (result != -1) {
-			if (player == CheckersState.O)
-				result = 1 - result;
+		int utility = state.getUtility();
+		if (utility != -1) {
+			if(player==CheckersState.X)
+			{
+				if(utility == 20000)
+					return utility;
+				else
+					return -utility;
+			} else if(player==CheckersState.O)
+			{
+				if(utility == 10000)
+					return utility;
+				else
+					return -utility;
+			}
+			else
+				throw new IllegalArgumentException("isWinner(): invalid player");
 		} else {
 			throw new IllegalArgumentException("State is not terminal.");
 		}
-		return result;
+	}
+	
+	public boolean isWinner(CheckersState state, String player)
+	{
+		int utility = state.getUtility();
+		
+		if(utility==-1)
+			throw new IllegalArgumentException("isWinner():State is not terminal.");
+		
+		if(player==CheckersState.X)
+		{
+			if(utility == 20000)
+				return true;
+			else
+				return false;
+		} else if(player==CheckersState.O)
+		{
+			if(utility == 10000)
+				return true;
+			else
+				return false;
+		}
+		else
+		{
+			throw new IllegalArgumentException("isWinner(): invalid player");
+		}
 	}
 	
 	@Override
