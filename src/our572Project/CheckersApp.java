@@ -125,7 +125,7 @@ public class CheckersApp {
 					square.setBackground(new Color(0, 153, 76));
 
 				square.setOpaque(true);
-				//square.setBorderPainted(false);
+				square.setBorderPainted(false);
 				
 				square.addActionListener(this);
 				squares[i] = square;
@@ -146,7 +146,11 @@ public class CheckersApp {
 			boolean repick_piece = false;
 			boolean isProposedMove = false;
 			if (ae == null || ae.getSource() == clearButton)
+			{
 				currState = game.getInitialState();
+				multiJumpInternalPath =null;
+				setDefaultColor();
+			}
 			else if (!game.isTerminal(currState)) {
 				if (ae.getSource() == proposeButton) {
 					proposeMove();
@@ -251,9 +255,9 @@ public class CheckersApp {
 						int col = pos.getXCoOrdinate();
 						int row = pos.getYCoOrdinate();
 						int absPos = 8*row+col;
-						squares[absPos].setBackground(new Color(255, 255, 204));
+						squares[absPos].setBackground(new Color(102, 0, 204));
 						squares[absPos].setOpaque(true);
-						//squares[absPos].setBorderPainted(false);
+						squares[absPos].setBorderPainted(false);
 					}
 					boardColorChanged = true;
 				}
@@ -337,7 +341,7 @@ public class CheckersApp {
 				{
 					squares[i].setBackground(new Color(182, 155, 76));
 					squares[i].setOpaque(true);
-					//squares[i].setBorderPainted(false);
+					squares[i].setBorderPainted(false);
 				}
 			}
 		}
