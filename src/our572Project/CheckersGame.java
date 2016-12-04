@@ -81,7 +81,7 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 	@Override
 	public int getEvaluation(CheckersState state, String player, int num)
 	{
-		if (num < 0 || num > 4)
+		if (num < 0 || num > 5)
 			throw new IllegalArgumentException("Evaluation function version out of bound (0-3)");
 		
 		int result = 0;
@@ -104,15 +104,17 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 		else if (num == 3)
 		{
 			//Evaluation function 3: 25F linear heuristics
-			result = evalFunc2(state, player);
+			result = evalFunc3(state, player);
 		}
 		else if (num == 4)
 		{
 			//Evaluation function 4: 3Phase
+			result = evalFunc4(state, player);
 		}
 		else
 		{
 			//Evaluation function 4: Expert 3Phase
+			result = evalFunc5(state, player);
 		}
 		
 		return result;
@@ -200,6 +202,9 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 			nPosOne++;
 		
 		res = nPosFour * 4 + nPosThree * 3 + nPosTwo * 2 + nPosOne;
+		
+		//System.out.println("Current player: " + player);
+		//System.out.println("Score: " + res);
 		
 		return res;
 	}
@@ -345,6 +350,18 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 		score = nPawns + nKings + nSafePawns + nSafeKings + nMoveablePawns + nMoveableKings + 
 				nProDistance + nUnoccupied;
 		
+//		System.out.println("Current player: " + player);
+//		System.out.println("Number of pawns: " + nPawns);
+//		System.out.println("Number of kings: " + nKings);
+//		System.out.println("Number of safe pawns: " + nSafePawns);
+//		System.out.println("Number of safe kings: " + nSafeKings);
+//		System.out.println("Number of moveable pawns: " + nMoveablePawns);
+//		System.out.println("Number of moveable kings: " + nMoveableKings);
+//		System.out.println("Number of promotion distance: " + nProDistance);
+//		System.out.println("Number of unoccupied promotion line: " + nUnoccupied);
+//		System.out.println("**********************************");
+		
+		
 		return score;
 	}
 	
@@ -447,23 +464,20 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 	//Feature 5
 	public int getMoveablePawns(CheckersState state, String player)
 	{	
-		List<CheckerAction> list = state.getFeasibleMoves(player);
+		List<XYLocation> moves = new ArrayList<XYLocation> ();	//Record the feasible moves of given pawn
 		List<XYLocation> record = new ArrayList<XYLocation> (); //Record all moveable pawns 
 		
-		for (int i = 0; i < list.size(); i++)
-		{
-			CheckerAction action = list.get(i);
-			XYLocation current = action.getSelNode();
-			if (state.isKing(current) == true)
-				continue;
-			else
-			{	
-				if (!record.contains(current))
-				{	
-					record.add(current);
+		for (int col = 0; col < 8; col++)
+			for (int row = 0; row < 8; row++)
+			{
+				XYLocation current = new XYLocation(col, row);
+				if ((state.getValue(current).equals(player)) && (!state.isKing(current)))
+				{		
+					moves = state.getFeasiblePositions(current);
+					if (moves.size() > 0)
+						record.add(current);
 				}
 			}
-		}
 		
 		return record.size();
 	}
@@ -471,18 +485,20 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 	//Feature 6
 	public int getMoveableKings(CheckersState state, String player)
 	{		
-		List<CheckerAction> list = state.getFeasibleMoves(player);
+		List<XYLocation> moves = new ArrayList<XYLocation> ();
 		List<XYLocation> record = new ArrayList<XYLocation> (); //Record all moveable kings 
 		
-		for (int i = 0; i < list.size(); i++)
-		{
-			CheckerAction action = list.get(i);
-			XYLocation current = action.getSelNode();
-			if ((state.isKing(current) == true) && (!record.contains(current)))
+		for (int col = 0; col < 8; col++)
+			for (int row = 0; row < 8; row++)
 			{
-				record.add(current);
+				XYLocation current = new XYLocation(col, row);
+				if (state.isPlayerAndKing(current, player))
+				{		
+					moves = state.getFeasiblePositions(current);
+					if (moves.size() > 0)
+						record.add(current);
+				}
 			}
-		}
 		
 		return record.size();
 	}
@@ -544,17 +560,42 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 	{
 		int score = 0;
 		//we should give different weights for these features
-		score=getDefenders(state,player)
-				+getAttackers(state,player)
-				+getCentralPawn(state,player)
-				+getCentralKing(state,player)
-				+getMainDiagPawn(state,player)
-				+getMainDiagKing(state,player)
-				+getDoubleDiagPawn(state,player)
-				+getDoubleDiagKing(state,player)
-				+getLonerPawn(state,player)
-				+getLonerKing(state,player)
-				+getHoles(state,player);
+		int num_Defenders=getDefenders(state,player);
+		int num_Attackers=getAttackers(state,player);
+		int num_CentralPawn=getCentralPawn(state,player);
+		int num_CentralKing=getCentralKing(state,player);
+		int num_MainDiagPawn=getMainDiagPawn(state,player);
+		int num_MainDiagKing=getMainDiagKing(state,player);
+		int num_DoubleDiagPawn=getDoubleDiagPawn(state,player);
+		int num_DoubleDiagKing=getDoubleDiagKing(state,player);
+		int num_LonerPawn=getLonerPawn(state,player);
+		int num_LonerKing=getLonerKing(state,player);
+		int num_Holes=getHoles(state,player);
+		
+		score=num_Defenders
+				+num_Attackers
+				+num_CentralPawn
+				+num_CentralKing
+				+num_MainDiagPawn
+				+num_MainDiagKing
+				+num_DoubleDiagPawn
+				+num_DoubleDiagKing
+				+num_LonerPawn
+				+num_LonerKing
+				+num_Holes;
+		
+//		System.out.println("Get features for "+player);
+//        System.out.println("Number of Defenders:"+num_Defenders);
+//        System.out.println("Number of Attackers:"+num_Attackers);
+//        System.out.println("Number of CentralPawn:"+num_CentralPawn);
+//        System.out.println("Number of CentralKing:"+num_CentralKing);
+//        System.out.println("Number of MainDigPawn:"+num_MainDiagPawn);
+//        System.out.println("Number of MainDiagKing:"+num_MainDiagKing);
+//        System.out.println("Number of DoubleDiagPawn:"+num_DoubleDiagPawn);
+//        System.out.println("Number of DoubleDiagKing:"+num_DoubleDiagKing);
+//        System.out.println("Number of LonerPawn:"+num_LonerPawn);
+//        System.out.println("Number of LonerKing:"+num_LonerKing);
+//        System.out.println("Number of Holes:"+num_Holes);
 		return score;
 	}
 	
@@ -575,7 +616,7 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
         			if(state.getValue(i, j).equals(player))
         				num++;
         }
-		
+
 		return num;
 	}
 	
@@ -600,7 +641,7 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
         			if(state.getValue(i, j).equals(player))
         				num++;
         }
-		  		
+		 
 		return num;
 	}
 	
@@ -654,7 +695,7 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 		for(int i=0,j=7;i<8;i++,j--)
 			if(state.getValue(i, j).equals(player)&&!state.isPlayerAndKing(i, j, player))
 				num++;
-
+		
 		return num;
 	}
 	
@@ -664,7 +705,7 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 		for(int i=0,j=7;i<8;i++,j--)
 			if(state.isPlayerAndKing(i, j, player))
 				num++;
-
+		
 		return num;
 	}
 	
@@ -678,7 +719,7 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 		for(int i=0,j=1;i<7;i++,j++)
 			if(state.getValue(i, j).equals(player)&&!state.isPlayerAndKing(i, j, player))
 				num++;
-		
+	
 		return num;
 	}
 	
@@ -703,7 +744,7 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 		for(int i=0;i<=7;i++)
 			for(int j=0;j<=7;j++)
 				if(state.getValue(i, j).equals(player)&&!state.isPlayerAndKing(i, j, player))
-					if(state.getValue(i-1, j-1).equals('-')&&state.getValue(i-1, j+1).equals('-')&&state.getValue(i+1, j+1).equals('-')&&state.getValue(i+1, j-1).equals('-'))
+					if(state.getValue(i-1, j-1).equals("-")&&state.getValue(i-1, j+1).equals("-")&&state.getValue(i+1, j+1).equals("-")&&state.getValue(i+1, j-1).equals("-"))
 						num++;					
 	
 		return num;
@@ -715,9 +756,9 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 		for(int i=0;i<=7;i++)
 			for(int j=0;j<=7;j++)
 				if(state.isPlayerAndKing(i, j, player))
-					if(state.getValue(i-1, j-1).equals('-')&&state.getValue(i-1, j+1).equals('-')&&state.getValue(i+1, j+1).equals('-')&&state.getValue(i+1, j-1).equals('-'))
+					if(state.getValue(i-1, j-1).equals("-")&&state.getValue(i-1, j+1).equals("-")&&state.getValue(i+1, j+1).equals("-")&&state.getValue(i+1, j-1).equals("-"))
 						num++;
-					
+		
 		return num;
 	}
 
@@ -726,7 +767,7 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 		int num=0;
 		for(int i=0;i<=7;i++){
 			for(int j=0;j<=7;j++){
-				if(state.getValue(i, j).equals('-')){
+				if(state.getValue(i, j).equals("-")){
 					int temp=0;
 					if(state.getValue(i-1, j-1).equals(player))
 						temp++;
@@ -741,6 +782,7 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 				}
 			}
 		}
+		
 		return num;
 	}
 	
@@ -748,12 +790,27 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 	public int getPatternFeature(CheckersState state, String player)
 	{    
 		//we can add different weights for these 5 pattern functions
-         int score=getTriangle(state,player)
-        		 +getOreo(state,player)
-        		 +getBridge(state,player)
-        		 +getDog(state,player)
-        		 +getCornerPawn(state,player)
-           		 +getCornerKing(state,player);
+		int num_Triangle=getTriangle(state,player);
+		int num_Oreo=getOreo(state,player);
+		int num_Bridge=getBridge(state,player);
+		int num_Dog=getDog(state,player);
+		int num_CornerPawn=getCornerPawn(state,player);
+		int num_CornerKing=getCornerKing(state,player);
+				
+         int score=num_Triangle
+        		 +num_Oreo
+        		 +num_Bridge
+        		 +num_Dog
+        		 +num_CornerPawn
+           		 +num_CornerKing;
+         
+//         System.out.println("Number of Triangle:"+num_Triangle);
+//         System.out.println("Number of Oreo:"+num_Oreo);
+//         System.out.println("Number of Bridge:"+num_Bridge);
+//         System.out.println("Number of Dog:"+num_Dog);
+//         System.out.println("Number of ConerPawn:"+num_CornerPawn);
+//         System.out.println("Number of CornerKing:"+num_CornerKing);
+//         System.out.println("**********************************");
          return score;
 	}
 	
@@ -768,6 +825,7 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 			if(state.getValue(2, 1).equals(player)&&state.getValue(1, 0).equals(player)&&state.getValue(3, 0).equals(player))
 				score= 1;
 		}
+	   
 	   return score;
 	}
 	
@@ -781,7 +839,7 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 		if(player.equals("X"))
 			if(state.getValue(4, 1).equals(player)&&state.getValue(3, 0).equals(player)&&state.getValue(5, 0).equals(player))
 		    	score=1;
-			
+		
 		return score;
 	}
 	
@@ -809,6 +867,7 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 		if(player.equals("X"))
 			if(state.getValue(1, 0).equals(player)&&state.getValue(0, 1).equals("O"))
 				num++;
+		
 		return num;
 	}
 	
@@ -835,7 +894,7 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 
 		if(player.equals("X"))
 			if(state.isPlayerAndKing(0,7,player))
-		    	score+=3;
+		    	score=1;
 			
 		return score;
 	}

@@ -30,6 +30,7 @@ public class CheckersState implements Cloneable {
 			EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,
 			EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,
 			EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY };
+	
 
 	private String playerToMove = X;
 	private double utility = -1; // 1: win for X, 0: win for O, 0.5: draw
@@ -44,7 +45,8 @@ public class CheckersState implements Cloneable {
 
 	public String getValue(int col, int row) {
 		if(col<0||col>7||row<0||row>7)
-			 throw new IllegalArgumentException("Error in getValue(): Board position out of boundary (0-7) !");
+			 //throw new IllegalArgumentException("Error in getValue(): Board position out of boundary (0-7) !");
+               return EMPTY;
 		return board[getAbsPosition(col, row)];
 	}
 

@@ -250,6 +250,10 @@ public class CheckersApp {
 			action = search.makeDecision(currState);
 			searchMetrics = search.getMetrics();
 			currState = game.getResult(currState, action);
+			
+			//for test the feature functions
+			//String player=game.getPlayer(currState);
+			//game.getEvaluation(currState, player, 1);
 		}
 
 		/** Updates the status bar. */

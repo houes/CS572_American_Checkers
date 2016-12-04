@@ -70,13 +70,14 @@ public class AlphaBetaSearch<STATE, ACTION, PLAYER> implements
 		double resultValue = Double.NEGATIVE_INFINITY;
 		PLAYER player = game.getPlayer(state);
 		for (ACTION action : game.getActions(state)) {
-			double value = minValue(game.getResult(state, action), player,
+			double value = maxValue(game.getResult(state, action), player,
 					Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY,MaxSearchDepth);
 			if (value > resultValue) {
 				result = action;
 				resultValue = value;
 			}
 		}
+		
 		return result;
 	}
 
