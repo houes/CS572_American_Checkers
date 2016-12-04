@@ -244,8 +244,8 @@ public class CheckersApp {
 			currState = game.getResult(currState, action);
 			
 			//for test the feature functions
-//			String player=game.getPlayer(currState);
-//			game.getEvaluation(currState, player, 3);
+			//String player=game.getPlayer(currState);
+			//game.getEvaluation(currState, player, 1);
 		}
 
 		/** Updates the status bar. */

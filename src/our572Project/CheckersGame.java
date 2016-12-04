@@ -109,10 +109,12 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 		else if (num == 4)
 		{
 			//Evaluation function 4: 3Phase
+			result = evalFunc4(state, player);
 		}
 		else
 		{
 			//Evaluation function 4: Expert 3Phase
+			result = evalFunc5(state, player);
 		}
 		
 		return result;
@@ -200,6 +202,9 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 			nPosOne++;
 		
 		res = nPosFour * 4 + nPosThree * 3 + nPosTwo * 2 + nPosOne;
+		
+		//System.out.println("Current player: " + player);
+		//System.out.println("Score: " + res);
 		
 		return res;
 	}
@@ -345,6 +350,18 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 		score = nPawns + nKings + nSafePawns + nSafeKings + nMoveablePawns + nMoveableKings + 
 				nProDistance + nUnoccupied;
 		
+//		System.out.println("Current player: " + player);
+//		System.out.println("Number of pawns: " + nPawns);
+//		System.out.println("Number of kings: " + nKings);
+//		System.out.println("Number of safe pawns: " + nSafePawns);
+//		System.out.println("Number of safe kings: " + nSafeKings);
+//		System.out.println("Number of moveable pawns: " + nMoveablePawns);
+//		System.out.println("Number of moveable kings: " + nMoveableKings);
+//		System.out.println("Number of promotion distance: " + nProDistance);
+//		System.out.println("Number of unoccupied promotion line: " + nUnoccupied);
+//		System.out.println("**********************************");
+		
+		
 		return score;
 	}
 	
@@ -447,35 +464,20 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 	//Feature 5
 	public int getMoveablePawns(CheckersState state, String player)
 	{	
-		List<CheckerAction> list = state.getFeasibleMoves(player);
+		List<XYLocation> moves = new ArrayList<XYLocation> ();	//Record the feasible moves of given pawn
 		List<XYLocation> record = new ArrayList<XYLocation> (); //Record all moveable pawns 
 		
-		// for wandi: 
-		// 1. getFeasibleMoves(player) returns actions for a specific player, so you don't have to check player later,
-		//    you could directly you state.isKing(XYlocation pos) to check if it is king
-		// 2. getFeasibleMoves(player) return multiple actions for one piece if any,say
-		//	  CheckerAction(Node0, pos0)
-		//    CheckerAction(Node0, pos1)
-		//    both pos0 and pos1 are valid moves for Node0
-		//    therefore, in your following loop, the same Pawn could be counted twice in case
-		//    it is not king and has two valid moves.
-		//    Therefore, you may have to filter the list returned from state.getFeasibleMoves(player) first
-		//    to get a list of actions whose SelNodes are all unique.
-		
-		for (int i = 0; i < list.size(); i++)
-		{
-			CheckerAction action = list.get(i);
-			XYLocation current = action.getSelNode();
-			if (state.isKing(current) == true)
-				continue;
-			else
-			{	
-				if (!record.contains(current))
-				{	
-					record.add(current);
+		for (int col = 0; col < 8; col++)
+			for (int row = 0; row < 8; row++)
+			{
+				XYLocation current = new XYLocation(col, row);
+				if ((state.getValue(current).equals(player)) && (!state.isKing(current)))
+				{		
+					moves = state.getFeasiblePositions(current);
+					if (moves.size() > 0)
+						record.add(current);
 				}
 			}
-		}
 		
 		return record.size();
 	}
@@ -483,20 +485,20 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 	//Feature 6
 	public int getMoveableKings(CheckersState state, String player)
 	{		
-		List<CheckerAction> list = state.getFeasibleMoves(player);
+		List<XYLocation> moves = new ArrayList<XYLocation> ();
 		List<XYLocation> record = new ArrayList<XYLocation> (); //Record all moveable kings 
 		
-		// wandi: same problem here, the king number are recounted by (the number of feasible moves it has -1).
-		
-		for (int i = 0; i < list.size(); i++)
-		{
-			CheckerAction action = list.get(i);
-			XYLocation current = action.getSelNode();
-			if ((state.isKing(current) == true) && (!record.contains(current)))
+		for (int col = 0; col < 8; col++)
+			for (int row = 0; row < 8; row++)
 			{
-				record.add(current);
+				XYLocation current = new XYLocation(col, row);
+				if (state.isPlayerAndKing(current, player))
+				{		
+					moves = state.getFeasiblePositions(current);
+					if (moves.size() > 0)
+						record.add(current);
+				}
 			}
-		}
 		
 		return record.size();
 	}
@@ -505,8 +507,6 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 	public int getProDistance(CheckersState state, String player)
 	{
 		int distance = 0;
-		
-		// for wandi: should this distance applied only to pawns, here it seems has been applied to all pieces including king.
 		
 		if (player == CheckersState.X)	//Red starts on the top
 		{
