@@ -541,7 +541,8 @@ public class CheckersState implements Cloneable {
 		{
 			int x1 = action.getMoveTo().getXCoOrdinate();
 			int x2 = action.getSelNode().getXCoOrdinate();
-			if( Math.abs(x1-x2)==2 )
+			if( Math.abs(x1-x2)==2    // one step jump
+				|| action.isMultiJump() ) // multi-jump: distance could be 1 or more than 2
 			{
 				jumpMoves.add(action);
 			}
