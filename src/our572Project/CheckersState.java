@@ -131,7 +131,7 @@ public class CheckersState implements Cloneable {
 		}
 		else if(action.isMultiJump()) // multi-jump
 		{
-			List<XYLocation> completeSequence = action.getMoveToSequence();
+			List<XYLocation> completeSequence = new ArrayList<XYLocation> (action.getMoveToSequence());
 			completeSequence.add(0, action.getSelNode()); // add head
 			for(int i=0;i<completeSequence.size()-1;i++)
 			{
@@ -176,7 +176,7 @@ public class CheckersState implements Cloneable {
 			dismark(midx, midy, opponent);
 		}else if(action.isMultiJump()) // multi-jump
 		{
-			List<XYLocation> completeSequence = action.getMoveToSequence();
+			List<XYLocation> completeSequence = new ArrayList<XYLocation> (action.getMoveToSequence());
 			completeSequence.add(0, action.getSelNode()); // add head
 			for(int i=0;i<completeSequence.size()-1;i++)
 			{
@@ -436,9 +436,34 @@ public class CheckersState implements Cloneable {
 		
 		List<CheckerAction> result = getDistinctMultiJumps(multiJumps);
 		
-/*		if(!result.isEmpty() && result.size()>=3)
+/*	the following is for debug only	
+ * if(!result.isEmpty() && result.size()==1)
 		{
-			System.out.println("debug");
+			CheckerAction act1 = new CheckerAction(new XYLocation(0,3), new XYLocation(2,5));
+			if(theFirstJump.equals(act1))
+			{
+			CheckerAction act = result.get(0);
+			List<XYLocation> pos= act.getMoveToSequence();
+			XYLocation last = pos.get(pos.size()-1);
+			if(last.equals(new XYLocation(0,7)))
+			{
+				System.out.println("debug");
+			}
+			if(pos.size()>=3)
+			{
+				XYLocation debug = new XYLocation(0,3);
+				
+				XYLocation p1 = pos.get(0);
+				XYLocation p2 = pos.get(1);
+				XYLocation p3 = pos.get(2);
+				//XYLocation p4 = pos.get(3);
+				if(p1.equals(debug) && p2.equals(debug) &&p3.equals(debug) )
+				{
+					System.out.println("debug");
+				}
+			}
+			}
+
 		}*/
 		
 		return result;

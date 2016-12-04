@@ -8,6 +8,7 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -66,6 +67,8 @@ public class CheckersApp {
 									// piece, if false, the current action is to
 									// move to a position
 		XYLocation selected_piece; // record the selected piece
+		List<XYLocation> multiJumpInternalPath; // record the multijump path, only interval pos
+		boolean boardColorChanged = false;
 
 		/** Standard constructor. */
 		CheckersPanel() {
@@ -217,6 +220,23 @@ public class CheckersApp {
 					} else
 						squares[i].setIcon(null);
 				}
+				
+				if(multiJumpInternalPath!=null)
+				{
+					for(XYLocation pos: multiJumpInternalPath)
+					{
+						int col = pos.getXCoOrdinate();
+						int row = pos.getYCoOrdinate();
+						int absPos = 8*row+col;
+						squares[absPos].setBackground(new Color(255, 255, 204));
+					}
+					boardColorChanged = true;
+				}
+				else if(boardColorChanged)
+				{
+					setDefaultColor();
+					boardColorChanged = false;
+				}
 
 				if (!repick_piece)
 					updateStatus();
@@ -251,6 +271,11 @@ public class CheckersApp {
 			searchMetrics = search.getMetrics();
 			currState = game.getResult(currState, action);
 			
+			if(action.isMultiJump())
+				multiJumpInternalPath = action.getCompleteHistory();
+			else
+				multiJumpInternalPath = null;
+			
 			//for test the feature functions
 			//String player=game.getPlayer(currState);
 			//game.getEvaluation(currState, player, 1);
@@ -272,6 +297,19 @@ public class CheckersApp {
 			if (searchMetrics != null)
 				statusText += "    " + searchMetrics;
 			statusBar.setText(statusText);
+		}
+		
+		private void setDefaultColor()
+		{
+			for (int i = 0; i < 64; i++) 
+			{
+				boolean evenRow = false;
+				if ((Math.floor(i / 8)) % 2 == 0)
+					evenRow = !evenRow;
+				int myInt = (evenRow) ? 1 : 0;
+				if ((i + myInt) % 2 == 0)
+					squares[i].setBackground(new Color(182, 155, 76));
+			}
 		}
 	}
 }

@@ -1,5 +1,6 @@
 package our572Project;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CheckerAction {
@@ -74,11 +75,30 @@ public class CheckerAction {
 	{
 		List<XYLocation> internalPos = null;
 		if(moveToSequence!=null && !moveToSequence.isEmpty())
-			internalPos =  moveToSequence.subList(0, moveToSequence.size()-1);
+			internalPos =  new ArrayList<XYLocation>(moveToSequence.subList(0, moveToSequence.size()-1));
 		
 		return internalPos;
 	}
 	
+	public List<XYLocation> getCompleteHistory()
+	{
+		// return all positions of the move: from first to last positions.
+		List<XYLocation> historyPath = new ArrayList<XYLocation>();
+		
+		if(!isMultiJump)
+		{
+			historyPath.add(selNode);
+			historyPath.add(moveTo);
+		}
+		else
+		{
+			if(moveToSequence!=null && !moveToSequence.isEmpty())
+				historyPath.addAll(moveToSequence);
+			historyPath.add(selNode); //add head
+		}
+		
+		return historyPath;
+	}
 	@Override
 	public boolean equals(Object o) {
 		if (null == o || !(o instanceof CheckerAction)) {
