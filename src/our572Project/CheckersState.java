@@ -123,10 +123,25 @@ public class CheckersState implements Cloneable {
 		XYLocation to_pos = action.getMoveTo();
 
 		// dismark middle king if jump
-		if (Math.abs(to_pos.getXCoOrdinate() - from_pos.getXCoOrdinate()) == 2) {
+		if (Math.abs(to_pos.getXCoOrdinate() - from_pos.getXCoOrdinate()) == 2) // regular jump
+		{
 			int midx = (from_pos.getXCoOrdinate() + to_pos.getXCoOrdinate()) / 2;
 			int midy = (from_pos.getYCoOrdinate() + to_pos.getYCoOrdinate()) / 2;
 			setKingValue(midx, midy, EMPTY);
+		}
+		else if(action.isMultiJump()) // multi-jump
+		{
+			List<XYLocation> completeSequence = action.getMoveToSequence();
+			completeSequence.add(0, action.getSelNode()); // add head
+			for(int i=0;i<completeSequence.size()-1;i++)
+			{
+				XYLocation fromItr = completeSequence.get(i);
+				XYLocation toItr = completeSequence.get(i+1);
+				int midx = (fromItr.getXCoOrdinate() + toItr.getXCoOrdinate()) / 2;
+				int midy = (fromItr.getYCoOrdinate() + toItr.getYCoOrdinate()) / 2;
+				setKingValue(midx, midy, EMPTY);
+			}
+				
 		}
 		
 		if (reachOpponnetHomeRow(to_pos) && !isKing(from_pos)) // new king
@@ -153,12 +168,27 @@ public class CheckersState implements Cloneable {
 		dismark(from_pos.getXCoOrdinate(), from_pos.getYCoOrdinate(), getPlayerToMove());
 
 		// 2.dismark middle position if jump
-		if (Math.abs(to_pos.getXCoOrdinate() - from_pos.getXCoOrdinate()) == 2) {
+		String opponent = (playerToMove == X ? O : X);
+		if (Math.abs(to_pos.getXCoOrdinate() - from_pos.getXCoOrdinate()) == 2)  // regular jump
+		{
 			int midx = (from_pos.getXCoOrdinate() + to_pos.getXCoOrdinate()) / 2;
 			int midy = (from_pos.getYCoOrdinate() + to_pos.getYCoOrdinate()) / 2;
-			String opponent = (playerToMove == X ? O : X);
 			dismark(midx, midy, opponent);
+		}else if(action.isMultiJump()) // multi-jump
+		{
+			List<XYLocation> completeSequence = action.getMoveToSequence();
+			completeSequence.add(0, action.getSelNode()); // add head
+			for(int i=0;i<completeSequence.size()-1;i++)
+			{
+				XYLocation fromItr = completeSequence.get(i);
+				XYLocation toItr = completeSequence.get(i+1);
+				int midx = (fromItr.getXCoOrdinate() + toItr.getXCoOrdinate()) / 2;
+				int midy = (fromItr.getYCoOrdinate() + toItr.getYCoOrdinate()) / 2;
+				dismark(midx, midy, opponent);
+			}
+				
 		}
+		
 		// 3.mark destination
 		mark(to_pos.getXCoOrdinate(), to_pos.getYCoOrdinate());
 	}
@@ -178,7 +208,7 @@ public class CheckersState implements Cloneable {
 	}
 
 	private void analyzeUtility() {
-		if (opponentHasNoPiece() || oppnentHasNoFeasibleMoves()) {
+		if (opponentHasNoPiece() || opponentHasNoFeasibleMoves()) {
 			utility = (playerToMove == X ? 1 : 0);
 		} else if (getNumberOfMarkedPositions() == 64) {
 			utility = 0.5;
@@ -196,7 +226,7 @@ public class CheckersState implements Cloneable {
 
 	}
 
-	public boolean oppnentHasNoFeasibleMoves() {
+	public boolean opponentHasNoFeasibleMoves() {
 
 		String opponent = (playerToMove == X ? O : X);
 

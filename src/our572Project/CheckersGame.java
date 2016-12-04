@@ -464,7 +464,7 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 	//Feature 5
 	public int getMoveablePawns(CheckersState state, String player)
 	{	
-		List<XYLocation> moves = new ArrayList<XYLocation> ();	//Record the feasible moves of given pawn
+		List<CheckerAction> moves = new ArrayList<CheckerAction> ();	//Record the feasible moves of given pawn
 		List<XYLocation> record = new ArrayList<XYLocation> (); //Record all moveable pawns 
 		
 		for (int col = 0; col < 8; col++)
@@ -473,7 +473,7 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 				XYLocation current = new XYLocation(col, row);
 				if ((state.getValue(current).equals(player)) && (!state.isKing(current)))
 				{		
-					moves = state.getFeasiblePositions(current);
+					moves = state.getFeasibleMoves(current);
 					if (moves.size() > 0)
 						record.add(current);
 				}
@@ -485,7 +485,7 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 	//Feature 6
 	public int getMoveableKings(CheckersState state, String player)
 	{		
-		List<XYLocation> moves = new ArrayList<XYLocation> ();
+		List<CheckerAction> moves = new ArrayList<CheckerAction> ();
 		List<XYLocation> record = new ArrayList<XYLocation> (); //Record all moveable kings 
 		
 		for (int col = 0; col < 8; col++)
@@ -494,7 +494,7 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 				XYLocation current = new XYLocation(col, row);
 				if (state.isPlayerAndKing(current, player))
 				{		
-					moves = state.getFeasiblePositions(current);
+					moves = state.getFeasibleMoves(current);
 					if (moves.size() > 0)
 						record.add(current);
 				}

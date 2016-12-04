@@ -70,6 +70,15 @@ public class CheckerAction {
 		return moveToSequence;
 	}
 	
+	public List<XYLocation> getInternalPos()
+	{
+		List<XYLocation> internalPos = null;
+		if(moveToSequence!=null && !moveToSequence.isEmpty())
+			internalPos =  moveToSequence.subList(0, moveToSequence.size()-1);
+		
+		return internalPos;
+	}
+	
 	@Override
 	public boolean equals(Object o) {
 		if (null == o || !(o instanceof CheckerAction)) {
