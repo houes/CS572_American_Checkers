@@ -39,11 +39,17 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 
 	@Override
 	public List<CheckerAction> getActions(CheckersState state) {
-		return state.getFeasibleMoves();
+		return state.getFeasibleMovesSorted();
 	}
 
 	@Override
 	public CheckersState getResult(CheckersState state, CheckerAction action) {
+		CheckersState result = state.clone();
+		result.mark(action);
+		return result;
+	}
+	
+	public static CheckersState getResultStatic(CheckersState state, CheckerAction action) {
 		CheckersState result = state.clone();
 		result.mark(action);
 		return result;
@@ -158,7 +164,7 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 		return result;
 	}
 		
-	public int evalFunc0(CheckersState state, String player)
+	public static int evalFunc0(CheckersState state, String player)
 	{
 		int res = 0;
 		

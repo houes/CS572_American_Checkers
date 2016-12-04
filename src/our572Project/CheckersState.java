@@ -661,10 +661,33 @@ public class CheckersState implements Cloneable {
 
 		List<CheckerAction> jumpMoves = getJumpMoves(allFeasibleMoves);
 		
+		List<CheckerAction> result = new ArrayList<CheckerAction>();
+		
 		if(!jumpMoves.isEmpty())
-			return jumpMoves;
+			result =  jumpMoves;
 		else
-			return allFeasibleMoves; // all regular moves
+			result = allFeasibleMoves; // all regular moves
+		
+		return result;
+	}
+	
+	public List<CheckerAction> getFeasibleMovesSorted() {
+	
+		// this function may cause infinite loop, please use ONLY outside CheckerState.
+		
+		List<CheckerAction> result = getFeasibleMoves();
+		
+		// sort the feasible moves by evaluation0, this affects branching factor
+		for(CheckerAction action: result)
+		{
+			CheckersState stateAfterAction = CheckersGame.getResultStatic(this,action);
+			double evalValue = CheckersGame.evalFunc0(stateAfterAction,playerToMove);
+			action.setEvalValue(evalValue);
+		}
+		
+		Collections.sort(result);
+		
+		return result;
 	}
 
 	@Override

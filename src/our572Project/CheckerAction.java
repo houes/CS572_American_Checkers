@@ -3,7 +3,7 @@ package our572Project;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CheckerAction {
+public class CheckerAction implements Comparable<CheckerAction>{
 
 	XYLocation selNode;
 	XYLocation moveTo;
@@ -15,6 +15,8 @@ public class CheckerAction {
 	boolean isMultiJump = false;
 	
 	List <XYLocation> moveToSequence; // more multi-Jumps
+	
+	double evalValue = Double.NEGATIVE_INFINITY;
 	
 	public CheckerAction(XYLocation selNode_, XYLocation moveTo_) {
 		selNode = selNode_;
@@ -71,6 +73,11 @@ public class CheckerAction {
 		return moveToSequence;
 	}
 	
+	public void setEvalValue(double value)
+	{
+		evalValue = value;
+	}
+	
 	public List<XYLocation> getInternalPos()
 	{
 		List<XYLocation> internalPos = null;
@@ -110,6 +117,16 @@ public class CheckerAction {
 	}
 
 	@Override
+    public int compareTo(CheckerAction other) {
+		if( evalValue > other.evalValue)
+			return -1;
+		else if (evalValue == other.evalValue)
+			return 0;
+		else
+			return 1;
+    }
+	
+	@Override
 	public String toString() {
 		StringBuilder strBuilder = new StringBuilder();
 		strBuilder.append(" selNode = " + selNode.toString() + " moveTo= " + moveTo.toString());
@@ -120,6 +137,7 @@ public class CheckerAction {
 			for(int i=0;i<moveToSequence.size()-1;i++)
 				strBuilder.append(" "+moveToSequence.get(i).toString());
 		}
+		strBuilder.append(" evalVal= "+ evalValue);
 		
 		return strBuilder.toString();
 	}
