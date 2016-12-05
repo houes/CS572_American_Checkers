@@ -8,6 +8,7 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -29,6 +30,8 @@ import javax.swing.JToolBar;
  */
 public class CheckersApp {
 
+	public static int MaxSearchDepth=6;
+	
 	/** Used for integration into the universal demo application. */
 	public JFrame constructApplicationFrame() {
 		JFrame frame = new JFrame();
@@ -69,7 +72,8 @@ public class CheckersApp {
 		XYLocation selected_piece; // record the selected piece
 		List<XYLocation> multiJumpInternalPath; // record the multijump path, only interval pos
 		boolean boardColorChanged = false;
-
+		double effectiveBranchingFactor =-1;
+		
 		/** Standard constructor. */
 		CheckersPanel() {
 			this.setLayout(new BorderLayout());
@@ -92,7 +96,7 @@ public class CheckersApp {
 			spanel.setLayout(new GridLayout(8, 8));
 			add(spanel, BorderLayout.CENTER);
 			squares = new JButton[64];
-			// Font f = new java.awt.Font(Font.SANS_SERIF, Font.PLAIN, 32);
+			
 			try {
 				int ICON_WIDTH = 60;
 				int ICON_HEIGHT = 60;
@@ -305,6 +309,9 @@ public class CheckersApp {
 				multiJumpInternalPath = action.getCompleteMultiJumpPath();
 			else
 				multiJumpInternalPath = null;
+
+			int numNodeExpanded = searchMetrics.getInt(AlphaBetaSearch.METRICS_NODES_EXPANDED);
+			effectiveBranchingFactor = Math.pow((double)numNodeExpanded, 1.0/MaxSearchDepth);
 			
 			//for test the feature functions
 			//String player=game.getPlayer(currState);
@@ -323,9 +330,13 @@ public class CheckersApp {
 					statusText = "No winner...";
 			else
 				statusText = "Next move: " + game.getPlayerByColor(currState);
-
+					
+			DecimalFormat df = new DecimalFormat("#.00"); 
+			
 			if (searchMetrics != null)
-				statusText += "    " + searchMetrics;
+				statusText += "    {Search Depth= " + MaxSearchDepth+"}    "+
+							  searchMetrics + "    {Effective Braching Factor: "+ df.format(effectiveBranchingFactor)+"}";
+			
 			statusBar.setText(statusText);
 		}
 		

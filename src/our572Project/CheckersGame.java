@@ -32,7 +32,7 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 	
 	public String getPlayerByColor(CheckersState state) {
 		if(state.getPlayerToMove().equals("X"))
-			return new String("Red");
+			return new String("Red    ");
 		else
 			return new String("White");
 	}
