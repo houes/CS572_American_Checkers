@@ -31,7 +31,7 @@ import javax.swing.JToolBar;
 public class CheckersApp {
 
 	public static int MaxSearchDepth=6;
-	public static int EvalFuncVersion=0; // 0,1,2,3,4 version of evaluation functions
+	public static int EvalFuncVersion=0; // 0,1,2,3,4,5 version of evaluation functions
 	
 	/** Used for integration into the universal demo application. */
 	public JFrame constructApplicationFrame() {
@@ -81,7 +81,7 @@ public class CheckersApp {
 			JToolBar tbar = new JToolBar();
 			tbar.setFloatable(false);
 			strategyCombo = new JComboBox<String>(new String[] { "EvalFunc0", "EvalFunc1",
-					"EvalFunc2", "EvalFunc3", "EvalFunc4" });
+					"EvalFunc2", "EvalFunc3", "EvalFunc4", "EvalFunc5" });
 			strategyCombo.setSelectedIndex(0);
 			tbar.add(strategyCombo);
 			tbar.add(Box.createHorizontalGlue());
@@ -305,6 +305,9 @@ public class CheckersApp {
 				break;
 			case 4:
 				EvalFuncVersion = 4;
+				break;
+			case 5:
+				EvalFuncVersion = 5;
 				break;
 			default:
 				EvalFuncVersion = 0;
