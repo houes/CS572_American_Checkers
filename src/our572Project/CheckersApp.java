@@ -31,6 +31,7 @@ import javax.swing.JToolBar;
 public class CheckersApp {
 
 	public static int MaxSearchDepth=6;
+	public static int EvalFuncVersion=0; // 0,1,2,3,4 version of evaluation functions
 	
 	/** Used for integration into the universal demo application. */
 	public JFrame constructApplicationFrame() {
@@ -79,9 +80,9 @@ public class CheckersApp {
 			this.setLayout(new BorderLayout());
 			JToolBar tbar = new JToolBar();
 			tbar.setFloatable(false);
-			strategyCombo = new JComboBox<String>(new String[] { "Minimax", "Alpha-Beta",
-					"Iterative Deepening Alpha-Beta", "Iterative Deepening Alpha-Beta (log)" });
-			strategyCombo.setSelectedIndex(1);
+			strategyCombo = new JComboBox<String>(new String[] { "EvalFunc0", "EvalFunc1",
+					"EvalFunc2", "EvalFunc3", "EvalFunc4" });
+			strategyCombo.setSelectedIndex(0);
 			tbar.add(strategyCombo);
 			tbar.add(Box.createHorizontalGlue());
 			clearButton = new JButton("Clear");
@@ -286,20 +287,27 @@ public class CheckersApp {
 		/** Uses adversarial search for selecting the next action. */
 		private void proposeMove() {
 			AdversarialSearch<CheckersState, CheckerAction> search;
+			search = AlphaBetaSearch.createFor(game);
+			
 			CheckerAction action;
 			switch (strategyCombo.getSelectedIndex()) {
 			case 0:
-				search = MinimaxSearch.createFor(game);
+				EvalFuncVersion = 0;
 				break;
 			case 1:
-				search = AlphaBetaSearch.createFor(game);
+				EvalFuncVersion = 1;
 				break;
 			case 2:
-				search = IterativeDeepeningAlphaBetaSearch.createFor(game, 0.0, 1.0, 1000);
+				EvalFuncVersion = 2;
+				break;
+			case 3:
+				EvalFuncVersion = 3;
+				break;
+			case 4:
+				EvalFuncVersion = 4;
 				break;
 			default:
-				search = IterativeDeepeningAlphaBetaSearch.createFor(game, 0.0, 1.0, 1000);
-				((IterativeDeepeningAlphaBetaSearch<?, ?, ?>) search).setLogEnabled(true);
+				EvalFuncVersion = 0;
 			}
 			action = search.makeDecision(currState);
 			searchMetrics = search.getMetrics();
