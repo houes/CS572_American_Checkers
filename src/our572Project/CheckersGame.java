@@ -643,7 +643,7 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 		return score;
 	}
 	
-	//Feature 9 - Layout feature 1:get number of defender pieces, pawn=1 king=2
+	//Feature 9 - Layout feature 1:get number of defender pieces(pawns and Kings)
 	public int getDefenders(CheckersState state, String player){
 		int num=0;
 		
@@ -664,7 +664,7 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 		return num;
 	}
 	
-	//Feature 10 - Layout feature 2: get number of attacking pieces, pawn=1, king=2
+	//Feature 10 - Layout feature 2: get number of attacking pawns
 	public int getAttackers(CheckersState state, String player){
 		
 		// for Xiaoqian: is this function finished?
@@ -675,14 +675,14 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 	    if(player.equals("O")){
 	       for(int j=0;j<=2;j++)
 	         for(int i=0;i<=7;i++)
-	        	if(state.getValue(i, j).equals(player))
+	        	if(state.getValue(i, j).equals(player)&&!state.isPlayerAndKing(i, j, player))
 	        	   num++;
 	    }
 	    
 	    if(player.equals("X")){
         	for(int j=5;j<=7;j++)
         		for(int i=0;i<=7;i++)
-        			if(state.getValue(i, j).equals(player))
+        			if(state.getValue(i, j).equals(player)&&!state.isPlayerAndKing(i, j, player))
         				num++;
         }
 		 
