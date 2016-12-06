@@ -32,7 +32,7 @@ public class CheckersState implements Cloneable {
 			EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY };
 	
 
-	private String playerToMove = X;
+	private String playerToMove = O;
 	private int utility = -1; // 20000: win for X, 10000: win for O, 15000: draw, -1: game not end
 
 	public String getPlayerToMove() {
