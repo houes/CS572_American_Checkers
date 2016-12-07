@@ -23,10 +23,11 @@ import javax.swing.JPanel;
 import javax.swing.JToolBar;
 
 /**
- * Simple graphical Tic-tac-toe game application. It demonstrates the Minimax
+ * Simple graphical Checkers game application. It demonstrates the Minimax
  * algorithm for move selection as well as alpha-beta pruning.
  * 
- * @author Ruediger Lunde
+ * @author Guangyu Hou, Wandi Xiong, Xiaoqian Mu, modified from AIMA book
+ *
  */
 public class CheckersApp {
 

@@ -8,10 +8,10 @@ import java.util.List;
 import java.util.ListIterator;
 
 /**
- * A state of the Tic-tac-toe game is characterized by a board containing
+ * A state of the Checkers game is characterized by a board containing
  * symbols X and O, the next player to move, and an utility information.
  * 
- * @author Ruediger Lunde
+ * @author Guangyu Hou, Wandi Xiong, Xiaoqian Mu, modified from AIMA book
  * 
  */
 public class CheckersState implements Cloneable {

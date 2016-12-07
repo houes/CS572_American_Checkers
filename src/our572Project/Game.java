@@ -28,7 +28,7 @@ import java.util.List;
  * player is charged an entry fee of 1/2.</li>
  * </ul>
  * 
- * @author Ruediger Lunde
+ * @author Guangyu Hou, Wandi Xiong, Xiaoqian Mu, modified from AIMA book
  * 
  * @param <STATE>
  *            Type which is used for states in the game.

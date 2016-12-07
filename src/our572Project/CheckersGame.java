@@ -5,10 +5,10 @@ import java.util.List;
 
 
 /**
- * Provides an implementation of the Tic-tac-toe game which can be used for
+ * Provides an implementation of the Checkers game which can be used for
  * experiments with the Minimax algorithm.
  * 
- * @author Ruediger Lunde
+ * @author Guangyu Hou, Wandi Xiong, Xiaoqian Mu, modified from AIMA book
  * 
  */
 public class CheckersGame implements Game<CheckersState, CheckerAction, String> {
