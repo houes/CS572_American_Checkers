@@ -118,7 +118,7 @@ public class CheckerAction implements Comparable<CheckerAction>{
 
 	@Override
     public int compareTo(CheckerAction other) {
-		if( evalValue > other.evalValue)
+		if( evalValue < other.evalValue)
 			return -1;
 		else if (evalValue == other.evalValue)
 			return 0;
