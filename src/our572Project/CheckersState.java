@@ -671,7 +671,7 @@ public class CheckersState implements Cloneable {
 		return result;
 	}
 	
-	public List<CheckerAction> getFeasibleMovesSorted(boolean ascendingOrder) {
+	public List<CheckerAction> getFeasibleMovesSorted() {
 	
 		// this function may cause infinite loop, please use ONLY outside CheckerState.
 		
@@ -681,14 +681,12 @@ public class CheckersState implements Cloneable {
 		for(CheckerAction action: result)
 		{
 			CheckersState stateAfterAction = CheckersGame.getResultStatic(this,action);
-			double evalValue = CheckersGame.evalFunc0(stateAfterAction,playerToMove);
+			//double evalValue = CheckersGame.evalFunc0(stateAfterAction,playerToMove);
+			double evalValue = CheckersGame.getMobility(stateAfterAction,playerToMove);
 			action.setEvalValue(evalValue);
 		}
 		
-		if(ascendingOrder)
-			Collections.sort(result);
-		else
-			Collections.sort(result,Collections.reverseOrder());
+		Collections.sort(result,Collections.reverseOrder());
 		
 		return result;
 	}

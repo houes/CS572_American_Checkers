@@ -38,8 +38,8 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 	}
 
 	@Override
-	public List<CheckerAction> getActions(CheckersState state, boolean ascendingOrder) {
-		return state.getFeasibleMovesSorted(ascendingOrder);
+	public List<CheckerAction> getActions(CheckersState state) {
+		return state.getFeasibleMovesSorted();
 	}
 
 	@Override
@@ -164,6 +164,12 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 		return result;
 	}
 		
+	
+	public static int getMobility(CheckersState state, String player)
+	{
+		return state.getFeasibleMoves(player).size();
+	}
+	
 	public static int evalFunc0(CheckersState state, String player)
 	{
 		int res = 0;

@@ -45,7 +45,7 @@ public interface Game<STATE, ACTION, PLAYER> {
 
 	PLAYER getPlayer(STATE state);
 
-	List<ACTION> getActions(STATE state, boolean ascendingOrder);
+	List<ACTION> getActions(STATE state);
 
 	STATE getResult(STATE state, ACTION action);
 

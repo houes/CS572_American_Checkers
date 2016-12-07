@@ -69,7 +69,7 @@ public class AlphaBetaSearch<STATE, ACTION, PLAYER> implements
 		ACTION result = null;
 		double resultValue = Double.NEGATIVE_INFINITY;
 		PLAYER player = game.getPlayer(state);
-		for (ACTION action : game.getActions(state,false)) {
+		for (ACTION action : game.getActions(state)) {
 			double value = minValue(game.getResult(state, action), player, // I believe it is minValue here, as the first step is to maximize its children value(min) 
 					Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY,MaxSearchDepth);
 			if (value > resultValue) {
@@ -90,7 +90,7 @@ public class AlphaBetaSearch<STATE, ACTION, PLAYER> implements
 				return game.getUtility(state, player);
 
 		double value = Double.NEGATIVE_INFINITY;
-		for (ACTION action : game.getActions(state,false)) {
+		for (ACTION action : game.getActions(state)) {
 			value = Math.max(value, minValue( //
 					game.getResult(state, action), player, alpha, beta,depth-1));
 			if (value >= beta)
@@ -109,7 +109,7 @@ public class AlphaBetaSearch<STATE, ACTION, PLAYER> implements
 				return game.getUtility(state, player);
 		
 		double value = Double.POSITIVE_INFINITY;
-		for (ACTION action : game.getActions(state,true)) {
+		for (ACTION action : game.getActions(state)) {
 			value = Math.min(value, maxValue( //
 					game.getResult(state, action), player, alpha, beta,depth-1));
 			if (value <= alpha)
