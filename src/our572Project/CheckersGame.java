@@ -167,7 +167,8 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 	
 	public static int getMobility(CheckersState state, String player)
 	{
-		return state.getFeasibleMoves(player).size();
+		String opponent = (player == "X" ? "O" : "X");
+		return state.getFeasibleMoves(player).size()-state.getFeasibleMoves(opponent).size();
 	}
 	
 	public static int evalFunc0(CheckersState state, String player)

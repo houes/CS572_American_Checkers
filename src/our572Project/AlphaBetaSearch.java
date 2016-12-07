@@ -93,8 +93,8 @@ public class AlphaBetaSearch<STATE, ACTION, PLAYER> implements
 		for (ACTION action : game.getActions(state)) {
 			value = Math.max(value, minValue( //
 					game.getResult(state, action), player, alpha, beta,depth-1));
-			if (value >= beta)
-				return value;
+/*			if (value >= beta)
+				return value;*/
 			alpha = Math.max(alpha, value);
 		}
 		return value;
@@ -112,8 +112,8 @@ public class AlphaBetaSearch<STATE, ACTION, PLAYER> implements
 		for (ACTION action : game.getActions(state)) {
 			value = Math.min(value, maxValue( //
 					game.getResult(state, action), player, alpha, beta,depth-1));
-			if (value <= alpha)
-				return value;
+/*			if (value <= alpha)
+				return value;*/
 			beta = Math.min(beta, value);
 		}
 		return value;
