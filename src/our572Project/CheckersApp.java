@@ -54,6 +54,7 @@ public class CheckersApp {
 	private static class CheckersPanel extends JPanel implements ActionListener {
 		private static final long serialVersionUID = 1L;
 		JComboBox<String> strategyCombo;
+		JComboBox<String> strategyCombo2;
 		JButton clearButton;
 		JButton proposeButton;
 		JButton[] squares;
@@ -88,6 +89,13 @@ public class CheckersApp {
 			strategyCombo.setSelectedIndex(0);
 			tbar.add(strategyCombo);
 			tbar.add(Box.createHorizontalGlue());
+			
+			strategyCombo2 = new JComboBox<String>(new String[] { "Not set","EvalFunc0", "EvalFunc1",
+					"EvalFunc2", "EvalFunc3", "EvalFunc4", "EvalFunc5" });
+			strategyCombo2.setSelectedIndex(0);
+			tbar.add(strategyCombo2);
+			tbar.add(Box.createHorizontalGlue());
+			
 			clearButton = new JButton("Clear");
 			clearButton.addActionListener(this);
 			tbar.add(clearButton);
@@ -158,6 +166,7 @@ public class CheckersApp {
 				currState = game.getInitialState();
 				multiJumpInternalPath =null;
 				setDefaultColor();
+				num_proposemove =0;
 			}
 			else if (!game.isTerminal(currState)) {
 				if (ae.getSource() == proposeButton) {
@@ -315,6 +324,38 @@ public class CheckersApp {
 			default:
 				EvalFuncVersion = 0;
 			}
+			
+			if(strategyCombo2.getSelectedIndex()!=0) // the user wants to use two evaluation functions alternatively.
+			{
+				if(num_proposemove%2==1)
+				{
+					switch (strategyCombo2.getSelectedIndex()) {
+
+					case 1:
+						EvalFuncVersion = 0;
+						break;
+					case 2:
+						EvalFuncVersion = 1;
+						break;
+					case 3:
+						EvalFuncVersion = 2;
+						break;
+					case 4:
+						EvalFuncVersion = 3;
+						break;
+					case 5:
+						EvalFuncVersion = 4;
+						break;
+					case 6:
+						EvalFuncVersion = 5;
+						break;
+					default:
+						throw new IllegalArgumentException("strategyCombo2 value illegal!");
+					}
+				}
+				
+			}
+			
 			action = search.makeDecision(currState);
 			searchMetrics = search.getMetrics();
 			currState = game.getResult(currState, action);
@@ -354,10 +395,13 @@ public class CheckersApp {
 			
 			if (game.isTerminal(currState)){
 				Branchfactor/=num_proposemove;
-				statusText+="Avg BranchingFactor:"+Branchfactor;
+				statusText+="   Avg BranchingFactor:"+ df.format(Branchfactor);
 				Branchfactor=0;
 				num_proposemove=0;
 			}
+			
+			statusText += "  { EvalFunc version="+ EvalFuncVersion+" }";
+			
 			statusBar.setText(statusText);
 		}
 		
