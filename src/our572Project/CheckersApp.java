@@ -74,6 +74,8 @@ public class CheckersApp {
 		List<XYLocation> multiJumpInternalPath; // record the multijump path, only interval pos
 		boolean boardColorChanged = false;
 		double effectiveBranchingFactor =-1;
+		int num_proposemove=0;
+		double Branchfactor=0.0;
 		
 		/** Standard constructor. */
 		CheckersPanel() {
@@ -323,7 +325,8 @@ public class CheckersApp {
 
 			int numNodeExpanded = searchMetrics.getInt(AlphaBetaSearch.METRICS_NODES_EXPANDED);
 			effectiveBranchingFactor = Math.pow((double)numNodeExpanded, 1.0/MaxSearchDepth);
-			
+			num_proposemove+=1;
+			Branchfactor+=effectiveBranchingFactor;
 			//for test the feature functions
 			//String player=game.getPlayer(currState);
 			//game.getEvaluation(currState, player, 1);
@@ -348,6 +351,12 @@ public class CheckersApp {
 				statusText += "    {Search Depth= " + MaxSearchDepth+"}    "+
 							  searchMetrics + "    {Effective Braching Factor: "+ df.format(effectiveBranchingFactor)+"}";
 			
+			if (game.isTerminal(currState)){
+				Branchfactor/=num_proposemove;
+				statusText+="Avg BranchingFactor:"+Branchfactor;
+				Branchfactor=0;
+				num_proposemove=0;
+			}
 			statusBar.setText(statusText);
 		}
 		
