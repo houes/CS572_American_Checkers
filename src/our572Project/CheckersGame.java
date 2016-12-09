@@ -294,17 +294,17 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 		//I'll change the parameters later. Now I just assign all parameters to 1.
 		if (phase == 1)
 		{	
-			res = nPawns + nKings + nSafePawns + nSafeKings + nMoveablePawns + nMoveableKings + 
-					nProDistance + nUnoccupied;
+			res = 5 * nPawns + 0 * nKings + 1 * nSafePawns + 0 * nSafeKings + 3 * nMoveablePawns + 0 * nMoveableKings + 
+					1 * nProDistance + 1 * nUnoccupied;
 		}
 		else if (phase == 2)
 		{
-			res = nPawns + nKings + nSafePawns + nSafeKings + nMoveablePawns + nMoveableKings + 
-					nProDistance + nUnoccupied;
+			res = 5 * nPawns + 5 * nKings + 2 * nSafePawns + nSafeKings + 2 * nMoveablePawns + 3 * nMoveableKings + 
+					2 * nProDistance + 3 * nUnoccupied;
 		}
 		else
 		{
-			res = nPawns + nKings + nSafePawns + nSafeKings + nMoveablePawns + nMoveableKings + 
+			res = 10 * nPawns + 10 * nKings + 5 * nSafePawns + 5 * nSafeKings + nMoveablePawns + nMoveableKings + 
 					nProDistance + nUnoccupied;
 		}
 		
@@ -332,17 +332,17 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 		if (phase == 1)
 		{	
 			//The parameter for kings should be low or zero. There doesn't exist a king.
-			res = nSafePawns + nAttackers + nCentralPawn + nCentralKing + nDoubleDiagKing + 
-					nTriangle + nOreo + nBridge + nDog + nCornerKing;
+			res = nSafePawns + 5 * nAttackers - 2 * nCentralPawn - 0 * nCentralKing -  0 * nDoubleDiagKing + 
+					2 * nTriangle + 2 * nOreo + 2 * nBridge + 2 * nDog + 0 * nCornerKing;
 		}
 		else if (phase == 2)
 		{
-			res = nSafePawns + nAttackers + nCentralPawn + nCentralKing + nDoubleDiagKing + 
-					nTriangle + nOreo + nBridge + nDog + nCornerKing;
+			res = 5 * nSafePawns + 5 * nAttackers - 2 * nCentralPawn + 2 * nCentralKing + 2 * nDoubleDiagKing + 
+					nTriangle + nOreo + nBridge + nDog - nCornerKing;
 		}
 		else
 		{
-			res = nSafePawns + nAttackers + nCentralPawn + nCentralKing + nDoubleDiagKing + 
+			res = 5 * nSafePawns + nAttackers - 3 * nCentralPawn - nCentralKing - nDoubleDiagKing + 
 					nTriangle + nOreo + nBridge + nDog + nCornerKing;
 		}
 		
@@ -398,8 +398,8 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 		int nProDistance = getProDistance(state, player);
 		int nUnoccupied = getUnoccupied(state, player);
 		
-		score = nPawns + nKings + nSafePawns + nSafeKings + nMoveablePawns + nMoveableKings + 
-				nProDistance + nUnoccupied;
+		score = nPawns + 5 * nKings + 2 * nSafePawns + 10 * nSafeKings + 2 * nMoveablePawns + 2 * nMoveableKings + 
+				nProDistance + 2 * nUnoccupied;
 		
 //		System.out.println("Current player: " + player);
 //		System.out.println("Number of pawns: " + nPawns);
@@ -623,17 +623,17 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 		int num_LonerKing=getLonerKing(state,player);
 		int num_Holes=getHoles(state,player);
 		
-		score=num_Defenders
-				+num_Attackers
-				+num_CentralPawn
-				+num_CentralKing
-				+num_MainDiagPawn
-				+num_MainDiagKing
-				+num_DoubleDiagPawn
-				+num_DoubleDiagKing
-				+num_LonerPawn
-				+num_LonerKing
-				+num_Holes;
+		score = 2 * num_Defenders
+				+ 2 * num_Attackers
+				- 2 *  num_CentralPawn
+				- 2 * num_CentralKing
+				- num_MainDiagPawn
+				- num_MainDiagKing
+				- num_DoubleDiagPawn
+				- num_DoubleDiagKing
+				+ 3 * num_LonerPawn
+				+ 3 * num_LonerKing
+				+ 2 * num_Holes;
 		
 //		System.out.println("Get features for "+player);
 //        System.out.println("Number of Defenders:"+num_Defenders);
@@ -673,10 +673,6 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 	
 	//Feature 10 - Layout feature 2: get number of attacking pawns
 	public int getAttackers(CheckersState state, String player){
-		
-		// for Xiaoqian: is this function finished?
-		//               seems you need to first distinguish the player in order to get where the "3 topmost rows" are
-		//				 and then distinguish whether it is pawn.
 		
 		int num=0;
 	    if(player.equals("O")){
@@ -848,12 +844,12 @@ public class CheckersGame implements Game<CheckersState, CheckerAction, String> 
 		int num_CornerPawn=getCornerPawn(state,player);
 		int num_CornerKing=getCornerKing(state,player);
 				
-         int score=num_Triangle
-        		 +num_Oreo
-        		 +num_Bridge
-        		 +num_Dog
-        		 +num_CornerPawn
-           		 +num_CornerKing;
+		int score= 3 * num_Triangle
+       		 	+3 * num_Oreo
+       		 	+2 * num_Bridge
+       		 	+3 * num_Dog
+       		 	+2 * num_CornerPawn
+          		 +2 * num_CornerKing;
          
 //         System.out.println("Number of Triangle:"+num_Triangle);
 //         System.out.println("Number of Oreo:"+num_Oreo);
